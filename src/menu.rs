@@ -18,7 +18,7 @@ impl Plugin for MenuPlugin {
 struct OnMainMenuScreen;
 
 #[derive(Component)]
-struct ButtonContainerMarker; // Isolated marker just for the button wrapper
+struct ButtonContainerMarker; 
 
 #[derive(Component)]
 enum MenuButtonAction {
@@ -29,6 +29,9 @@ enum MenuButtonAction {
     ConfirmYes,
     ConfirmNo,
     BackToMain,
+    HowToPlay,
+    CreateServer,
+    JoinServer,
 }
 
 #[derive(Resource, Default, PartialEq, Eq, Clone, Copy)]
@@ -37,6 +40,7 @@ enum MenuScreenState {
     Main,
     ConfirmExit,
     Credits,
+    StartSubMenu,
 }
 
 fn setup_menu(
@@ -52,13 +56,12 @@ fn setup_menu(
         1080
     );
 
-    // Audio spawns ONCE and stays active
+    // Audio directory targeted directly
     commands.spawn(AudioBundle {
         source: asset_server.load("sounds/audio.ogg"),
         settings: PlaybackSettings::LOOP,
     });
 
-    // Video background spawns ONCE
     commands.spawn((
         ImageBundle {
             style: Style {
@@ -97,7 +100,7 @@ fn setup_menu(
             OnMainMenuScreen,
         ))
         .with_children(|parent| {
-            // TOP LEFT: Title (Never moves or restarts)
+            // TOP LEFT: Title
             parent.spawn(NodeBundle {
                 style: Style { 
                     position_type: PositionType::Absolute, 
@@ -117,12 +120,12 @@ fn setup_menu(
                 ]).with_style(Style { margin: UiRect::top(Val::Px(5.0)), ..default() }));
             });
 
-            // MID LEFT: Isolated Interactive Buttons Container
+            // MID LEFT / MAIN AREA: Dynamic Content Parent Node
             parent.spawn((
                 NodeBundle {
                     style: Style { 
                         position_type: PositionType::Absolute, 
-                        top: Val::Percent(45.0), // Marginally raised to anchor the philosophy statement panel
+                        top: Val::Percent(45.0), 
                         left: Val::Px(40.0), 
                         flex_direction: FlexDirection::Column, 
                         align_items: AlignItems::FlexStart, 
@@ -139,7 +142,6 @@ fn setup_menu(
         });
 }
 
-// Helper to fill the button container based on state
 fn populate_buttons(
     menu: &mut ChildBuilder,
     font: &Handle<Font>,
@@ -178,7 +180,6 @@ fn populate_buttons(
                 TextStyle { font: font.clone(), font_size: 20.0, color: Color::RED },
             ));
 
-            // Core Technical Execution Team
             let core_team = [
                 ("ARITRASH SARKAR", "UI Architecture / Gameplay Mechanics / Sound Design / Finite State Machines"),
                 ("ROHEET PURKAYASTHA", "Distributed Network Engineering / Map Topography / Character Design Infrastructure"),
@@ -191,7 +192,6 @@ fn populate_buttons(
                 ]));
             }
 
-            // The End Poem Manifest Chunk
             menu.spawn(TextBundle::from_section(
                 "\"They dictated that this space was too vast for three handles to shape.\n\
                 Then the third walked away, relinquishing the keyboard.\n\
@@ -203,6 +203,72 @@ fn populate_buttons(
             ).with_style(Style { margin: UiRect::vertical(Val::Px(10.0)), ..default() }));
 
             spawn_menu_button(menu, font, "[ ESCAPE TERMINAL / BACK ]", MenuButtonAction::BackToMain);
+        }
+        MenuScreenState::StartSubMenu => {
+            menu.spawn(NodeBundle {
+                style: Style {
+                    flex_direction: FlexDirection::Row,
+                    column_gap: Val::Px(30.0),
+                    align_items: AlignItems::Center,
+                    margin: UiRect::bottom(Val::Px(20.0)),
+                    ..default()
+                },
+                background_color: Color::NONE.into(),
+                ..default()
+            }).with_children(|row| {
+                let sub_modes = [
+                    ("HOW TO PLAY", "[ ? ]", MenuButtonAction::HowToPlay, "Operational Protocols"),
+                    ("CREATE SERVER", "[ H ]", MenuButtonAction::CreateServer, "Host Local Node"),
+                    ("JOIN SERVER", "[ J ]", MenuButtonAction::JoinServer, "Connect Remote Socket"),
+                ];
+
+                for (title, glyph, action, description) in sub_modes {
+                    row.spawn((
+                        ButtonBundle {
+                            style: Style {
+                                width: Val::Px(260.0),
+                                height: Val::Px(200.0),
+                                flex_direction: FlexDirection::Column,
+                                align_items: AlignItems::Center,
+                                justify_content: JustifyContent::Center,
+                                padding: UiRect::all(Val::Px(15.0)),
+                                border: UiRect::all(Val::Px(2.0)),
+                                ..default()
+                            },
+                            border_color: BorderColor(Color::rgb(0.3, 0.3, 0.3)),
+                            background_color: Color::rgba(0.05, 0.05, 0.05, 0.85).into(),
+                            ..default()
+                        },
+                        action,
+                    )).with_children(|panel| {
+                        // Clean procedural terminal placeholder glyph
+                        panel.spawn(TextBundle::from_section(
+                            glyph,
+                            TextStyle { font: font.clone(), font_size: 36.0, color: Color::RED }
+                        ).with_style(Style { margin: UiRect::bottom(Val::Px(15.0)), ..default() }));
+
+                        panel.spawn(NodeBundle {
+                            style: Style {
+                                flex_direction: FlexDirection::Column,
+                                align_items: AlignItems::Center,
+                                ..default()
+                            },
+                            ..default()
+                        }).with_children(|labels| {
+                            labels.spawn(TextBundle::from_section(
+                                title,
+                                TextStyle { font: font.clone(), font_size: 18.0, color: Color::WHITE }
+                            ));
+                            labels.spawn(TextBundle::from_section(
+                                description,
+                                TextStyle { font: font.clone(), font_size: 12.0, color: Color::rgb(0.5, 0.5, 0.5) }
+                            ).with_style(Style { margin: UiRect::top(Val::Px(4.0)), ..default() }));
+                        });
+                    });
+                }
+            });
+
+            spawn_menu_button(menu, font, "[ BACK ]", MenuButtonAction::BackToMain);
         }
     }
 }
@@ -237,50 +303,95 @@ fn spawn_menu_button(
 
 fn menu_action_system(
     mut interaction_query: Query<
-        (&Interaction, &MenuButtonAction, &Children),
+        (&Interaction, &MenuButtonAction, &Children, Option<&mut BorderColor>),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
     mut app_exit_events: EventWriter<AppExit>,
     mut screen_state: ResMut<MenuScreenState>,
+    asset_server: Res<AssetServer>,
+    mut commands: Commands,
 ) {
-    for (interaction, action, children) in &mut interaction_query {
-        if let Ok(mut text) = text_query.get_mut(children[0]) {
-            match *interaction {
-                Interaction::Pressed => {
-                    match action {
-                        MenuButtonAction::Exit => {
-                            *screen_state = MenuScreenState::ConfirmExit;
-                        }
-                        MenuButtonAction::ConfirmYes => {
-                            app_exit_events.send(AppExit::default());
-                        }
-                        MenuButtonAction::ConfirmNo | MenuButtonAction::BackToMain => {
-                            *screen_state = MenuScreenState::Main;
-                        }
-                        MenuButtonAction::Credits => {
-                            *screen_state = MenuScreenState::Credits;
-                        }
-                        MenuButtonAction::Start => {
-                            println!("Start action triggered!");
-                        }
-                        MenuButtonAction::Settings => {
-                            println!("Settings action triggered!");
-                        }
+    // Collect entities to safely modify text modifications later, preventing double-borrow errors
+    let mut text_to_update: Option<(Entity, Color)> = None;
+
+    for (interaction, action, children, opt_border) in &mut interaction_query {
+        // Resolve target text entity safely from sub-nodes or direct layouts
+        let mut target_text_entity = None;
+        for child in children.iter() {
+            if text_query.get(*child).is_ok() {
+                target_text_entity = Some(*child);
+                break;
+            }
+            // Dive one level deep to handle nested panel structures
+            if let Ok(children_deep) = text_query.get_mut(*child) {
+                let _ = children_deep; // structural safety check
+            }
+        }
+        
+        // Fallback to primary index if flat array structures are used
+        let text_entity = target_text_entity.unwrap_or(children[0]);
+
+        match *interaction {
+            Interaction::Pressed => {
+                commands.spawn(AudioBundle {
+                    source: asset_server.load("audio/click_button.ogg"),
+                    settings: PlaybackSettings::ONCE,
+                });
+
+                match action {
+                    MenuButtonAction::Start => {
+                        *screen_state = MenuScreenState::StartSubMenu;
+                    }
+                    MenuButtonAction::Exit => {
+                        *screen_state = MenuScreenState::ConfirmExit;
+                    }
+                    MenuButtonAction::ConfirmYes => {
+                        app_exit_events.send(AppExit::default());
+                    }
+                    MenuButtonAction::ConfirmNo | MenuButtonAction::BackToMain => {
+                        *screen_state = MenuScreenState::Main;
+                    }
+                    MenuButtonAction::Credits => {
+                        *screen_state = MenuScreenState::Credits;
+                    }
+                    MenuButtonAction::HowToPlay => {
+                        println!("How to Play triggered!");
+                    }
+                    MenuButtonAction::CreateServer => {
+                        println!("Create Server pipeline active!");
+                    }
+                    MenuButtonAction::JoinServer => {
+                        println!("Join Server connection socket prompt active!");
+                    }
+                    MenuButtonAction::Settings => {
+                        println!("Settings action triggered!");
                     }
                 }
-                Interaction::Hovered => {
-                    text.sections[0].style.color = Color::RED;
+            }
+            Interaction::Hovered => {
+                text_to_update = Some((text_entity, Color::RED));
+                if let Some(mut border) = opt_border {
+                    border.0 = Color::RED;
                 }
-                Interaction::None => {
-                    text.sections[0].style.color = Color::WHITE;
+            }
+            Interaction::None => {
+                text_to_update = Some((text_entity, Color::WHITE));
+                if let Some(mut border) = opt_border {
+                    border.0 = Color::rgb(0.3, 0.3, 0.3);
                 }
             }
         }
     }
+
+    // Apply the text modifications cleanly outside the query loop iteration
+    if let Some((entity, color)) = text_to_update {
+        if let Ok(mut text) = text_query.get_mut(entity) {
+            text.sections[0].style.color = color;
+        }
+    }
 }
 
-// ONLY clears and respawns the button container node, leaving video/audio untouched
 fn update_menu_buttons(
     mut commands: Commands,
     screen_state: Res<MenuScreenState>,
@@ -289,12 +400,8 @@ fn update_menu_buttons(
 ) {
     if screen_state.is_changed() {
         let font_mono = asset_server.load("fonts/JetBrainsMono-Regular.ttf");
-
-        // Despawn old buttons only
         for container_entity in &container_query {
             commands.entity(container_entity).despawn_descendants();
-
-            // Re-populate the exact same container node
             commands.entity(container_entity).with_children(|menu| {
                 populate_buttons(menu, &font_mono, &screen_state);
             });
