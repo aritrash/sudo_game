@@ -1,7 +1,12 @@
 mod splash;
+mod menu;
+mod video;
 
 use bevy::prelude::*;
 use splash::SplashPlugin;
+use menu::MenuPlugin;
+use bevy::render::camera::ClearColorConfig;
+use bevy::window::PrimaryWindow;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -14,22 +19,40 @@ pub enum AppState {
 }
 
 fn main() {
+    // --- GSTREAMER SANITY CHECK ---
+    gstreamer::init().unwrap();
+    println!("GStreamer successfully linked! Version: {}", gstreamer::version_string());
+    // ------------------------------
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "S.U.D.O. - System User Deception Override".into(),
-                resolution: (1280.0, 720.0).into(),
-                resizable: false, 
+                resolution: (1280.0, 720.0).into(), 
                 ..default()
             }),
             ..default()
         }))
         .init_state::<AppState>()
         .add_plugins(SplashPlugin)
-        .add_systems(Startup, setup_camera)
+        .add_plugins(MenuPlugin)
+        .add_plugins(video::VideoPlugin)
+        .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }
 
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle {
+        camera: Camera {
+            order: 1,
+            clear_color: ClearColorConfig::None,
+            ..default()
+        },
+        ..default()
+    });
+}
+
+fn maximize_window(mut query: Query<&mut Window, With<PrimaryWindow>>) {
+    if let Ok(mut window) = query.get_single_mut() {
+        window.set_maximized(true);
+    }
 }
