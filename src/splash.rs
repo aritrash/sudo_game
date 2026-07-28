@@ -170,7 +170,7 @@ fn setup_warning(mut commands: Commands, asset_server: Res<AssetServer>) {
             ).with_style(Style { margin: UiRect::bottom(Val::Px(20.0)), ..default() }));
 
             parent.spawn(TextBundle::from_section(
-                "This video features flashing lights, rapid geometric transitions, and intense visual effects that may\ntrigger discomfort or seizures for photosensitive viewers. Viewer discretion is advised.",
+                "This game features flashing lights, rapid geometric transitions, and intense visual effects that may\ntrigger discomfort or seizures for photosensitive viewers. Viewer discretion is advised.",
                 TextStyle {
                     font: asset_server.load("fonts/Roboto-Regular.ttf"),
                     font_size: 18.0,
@@ -274,7 +274,7 @@ fn animate_boot_console(
                 boot_seq.step += 1;
             } else {
                 // Boot sequence finished, load the actual game menu
-                next_state.set(AppState::MainMenu);
+                next_state.set(AppState::AgeGate);
             }
         }
     }

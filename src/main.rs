@@ -1,6 +1,8 @@
 mod splash;
 mod menu;
 mod video;
+mod agegate;
+mod loading;
 
 use bevy::prelude::*;
 use splash::SplashPlugin;
@@ -15,6 +17,8 @@ pub enum AppState {
     SplashStudio,
     SplashWarning,
     SplashBoot,
+    AgeGate,
+    Loading,
     MainMenu, 
 }
 
@@ -34,6 +38,8 @@ fn main() {
         }))
         .init_state::<AppState>()
         .add_plugins(SplashPlugin)
+        .add_plugins(agegate::AgeGatePlugin)
+        .add_plugins(loading::LoadingPlugin)
         .add_plugins(MenuPlugin)
         .add_plugins(video::VideoPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))

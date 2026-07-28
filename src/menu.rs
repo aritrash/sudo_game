@@ -24,9 +24,11 @@ struct ButtonContainerMarker; // Isolated marker just for the button wrapper
 enum MenuButtonAction {
     Start,
     Settings,
+    Credits,
     Exit,
     ConfirmYes,
     ConfirmNo,
+    BackToMain,
 }
 
 #[derive(Resource, Default, PartialEq, Eq, Clone, Copy)]
@@ -34,6 +36,7 @@ enum MenuScreenState {
     #[default]
     Main,
     ConfirmExit,
+    Credits,
 }
 
 fn setup_menu(
@@ -119,7 +122,7 @@ fn setup_menu(
                 NodeBundle {
                     style: Style { 
                         position_type: PositionType::Absolute, 
-                        top: Val::Percent(55.0), 
+                        top: Val::Percent(45.0), // Marginally raised to anchor the philosophy statement panel
                         left: Val::Px(40.0), 
                         flex_direction: FlexDirection::Column, 
                         align_items: AlignItems::FlexStart, 
@@ -147,6 +150,7 @@ fn populate_buttons(
             let menu_items = [
                 ("> START", MenuButtonAction::Start),
                 ("> SETTINGS", MenuButtonAction::Settings),
+                ("> CREDITS", MenuButtonAction::Credits),
                 ("> EXIT", MenuButtonAction::Exit),
             ];
             for (label, action) in menu_items {
@@ -166,6 +170,39 @@ fn populate_buttons(
             for (label, action) in confirm_items {
                 spawn_menu_button(menu, font, label, action);
             }
+        }
+        MenuScreenState::Credits => {
+            menu.spawn(TextBundle::from_section(
+                "SYSTEM DEVELOPMENT PROTOCOL LOG\n\
+                ==============================",
+                TextStyle { font: font.clone(), font_size: 20.0, color: Color::RED },
+            ));
+
+            // Core Technical Execution Team
+            let core_team = [
+                ("ARITRASH SARKAR", "UI Architecture / Gameplay Mechanics / Sound Design / Finite State Machines"),
+                ("ROHEET PURKAYASTHA", "Distributed Network Engineering / Map Topography / Character Design Infrastructure"),
+            ];
+
+            for (developer, systems) in core_team {
+                menu.spawn(TextBundle::from_sections([
+                    TextSection::new(format!("> {} \n", developer), TextStyle { font: font.clone(), font_size: 18.0, color: Color::WHITE }),
+                    TextSection::new(format!("  {}\n", systems), TextStyle { font: font.clone(), font_size: 14.0, color: Color::rgb(0.6, 0.6, 0.6) }),
+                ]));
+            }
+
+            // The End Poem Manifest Chunk
+            menu.spawn(TextBundle::from_section(
+                "\"They dictated that this space was too vast for three handles to shape.\n\
+                Then the third walked away, relinquishing the keyboard.\n\
+                They did not understand the nature of low-level compilation.\n\
+                It does not require legions to override a system.\n\
+                It only requires those who refuse to disconnect.\n\
+                Two minds. One state machine. Infinite recursion.\"",
+                TextStyle { font: font.clone(), font_size: 13.0, color: Color::rgb(0.4, 0.7, 0.5) },
+            ).with_style(Style { margin: UiRect::vertical(Val::Px(10.0)), ..default() }));
+
+            spawn_menu_button(menu, font, "[ ESCAPE TERMINAL / BACK ]", MenuButtonAction::BackToMain);
         }
     }
 }
@@ -218,8 +255,11 @@ fn menu_action_system(
                         MenuButtonAction::ConfirmYes => {
                             app_exit_events.send(AppExit::default());
                         }
-                        MenuButtonAction::ConfirmNo => {
+                        MenuButtonAction::ConfirmNo | MenuButtonAction::BackToMain => {
                             *screen_state = MenuScreenState::Main;
+                        }
+                        MenuButtonAction::Credits => {
+                            *screen_state = MenuScreenState::Credits;
                         }
                         MenuButtonAction::Start => {
                             println!("Start action triggered!");
