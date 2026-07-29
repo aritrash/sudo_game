@@ -90,51 +90,81 @@ fn setup_tutorial_arena(
         OnTutorialLayer,
     ));
 
-    // --- UPGRADED AAA LIGHTING PLATFORM ---
+    // --- AAA INTERIOR POINT LIGHT MATRIX (RE-ENGINEERED) ---
+    // Added 0.0 to light up the player spawn point, and extended past the server zone
+    let ceiling_lights = [0.0, -20.0, -40.0, -65.0, -90.0, -115.0];
     
-    // Balanced directional lighting striking down the corridor with high-fidelity shadows
-    commands.spawn((
-        DirectionalLightBundle {
-            directional_light: DirectionalLight {
-                color: Color::rgb(0.9, 0.95, 1.0), // Stark, crisp light
-                illuminance: 5500.0,              // Increased intensity
-                shadows_enabled: true,
-                shadow_depth_bias: 0.03,          // Smooths out shadow acne artifacts
-                shadow_normal_bias: 0.6,          // Prevents blocky shadow steps on seams
-                ..default()
-            },
-            // Pointing down and slightly across the corridor to illuminate both walls smoothly
-            transform: Transform::from_xyz(2.0, 10.0, 5.0).looking_at(Vec3::new(0.0, 0.0, -40.0), Vec3::Y),
-            cascade_shadow_config: CascadeShadowConfigBuilder {
-                first_cascade_far_bound: 7.0,
-                maximum_distance: 80.0,
-                ..default()
-            }
-            .build(),
-            ..default()
-        },
-        OnTutorialLayer,
-    ));
-
-    // Elevate ambient lighting to eliminate pitch-black voids
-    commands.insert_resource(AmbientLight {
-        color: Color::rgb(0.18, 0.20, 0.25), // Cyberpunk cold blue-grey tint
-        brightness: 450.0,                  // Significantly raised base floor luminosity
+    let light_panel_mat = materials.add(StandardMaterial {
+        base_color: Color::rgb(0.9, 0.95, 1.0),
+        emissive: Color::rgb(3.5, 4.8, 6.5), // Elevated slightly for a stronger glow profile
+        ..default()
     });
 
-    // --- GEOMETRY & MATERIALS ---
+    for (i, z_pos) in ceiling_lights.iter().enumerate() {
+        // Alternating small X-axis drift offsets (0.15, -0.15) to break up mechanical wall seam lines
+        let x_offset = if i % 2 == 0 { 0.15 } else { -0.15 };
+        
+        // Spawn physical light emitters (Dropped down to y = 5.6 to illuminate the ceiling deck smoothly)
+        commands.spawn((
+            PointLightBundle {
+                point_light: PointLight {
+                    color: Color::rgb(0.85, 0.92, 1.0),
+                    intensity: 150_000.0, // Re-boosted to account for dropped ceiling spread
+                    range: 40.0,
+                    shadows_enabled: true,
+                    shadow_depth_bias: 0.05,
+                    shadow_normal_bias: 0.4,
+                    ..default()
+                },
+                transform: Transform::from_xyz(x_offset, 5.5, *z_pos),
+                ..default()
+            },
+            OnTutorialLayer,
+        ));
+
+        // Spawn physical light fixture mesh
+        commands.spawn((
+            PbrBundle {
+                mesh: meshes.add(Cuboid::new(1.5, 0.05, 1.5)),
+                transform: Transform::from_xyz(x_offset, 5.95, *z_pos),
+                material: light_panel_mat.clone(),
+                ..default()
+            },
+            OnTutorialLayer,
+        ));
+    }
+
+    // Slightly raised ambient fill to soften out long shadow gradient depths
+    commands.insert_resource(AmbientLight {
+        color: Color::rgb(0.12, 0.14, 0.18),
+        brightness: 200.0,
+    });
+
+    // --- STRUCTURAL MATERIALS & ASSET GRAPHIC LOADING ---
     let floor_mat = materials.add(StandardMaterial {
-        base_color: Color::rgb(0.12, 0.12, 0.15),
-        perceptual_roughness: 0.6,
-        metallic: 0.2, // Gives a slight sheen under the light
+        base_color: Color::rgb(0.15, 0.15, 0.18),
+        perceptual_roughness: 0.5,
+        metallic: 0.4,
         ..default()
     });
     
     let wall_mat = materials.add(StandardMaterial {
-        base_color: Color::rgb(0.08, 0.08, 0.12),
-        perceptual_roughness: 0.7,
+        base_color: Color::rgb(0.06, 0.06, 0.08),
+        perceptual_roughness: 0.6,
         ..default()
     });
+
+    // Load your custom Canva graphics asset descriptor
+    let backend_wall_texture: Handle<Image> = asset_server.load("graphics/tutorial_rear_wall.png");
+    
+    let rear_wall_mat = materials.add(StandardMaterial {
+        base_color_texture: Some(backend_wall_texture),
+        perceptual_roughness: 0.8,
+        cull_mode: None, // Ensures visibility regardless of camera flip indices
+        ..default()
+    });
+
+    // --- GEOMETRY INJECTION ---
 
     // Hallway Floor
     commands.spawn((
@@ -142,6 +172,17 @@ fn setup_tutorial_arena(
             mesh: meshes.add(Plane3d::default().mesh().size(10.0, 150.0)),
             transform: Transform::from_xyz(0.0, 0.0, -50.0),
             material: floor_mat,
+            ..default()
+        },
+        OnTutorialLayer,
+    ));
+
+    // Hallway Ceiling
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Cuboid::new(10.0, 0.1, 150.0)),
+            transform: Transform::from_xyz(0.0, 6.0, -50.0),
+            material: wall_mat.clone(),
             ..default()
         },
         OnTutorialLayer,
@@ -164,6 +205,17 @@ fn setup_tutorial_arena(
             mesh: meshes.add(Cuboid::new(0.2, 6.0, 150.0)),
             transform: Transform::from_xyz(5.0, 3.0, -50.0),
             material: wall_mat,
+            ..default()
+        },
+        OnTutorialLayer,
+    ));
+
+    // End Wall / Server Mainframe Placeholder
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Cuboid::new(10.0, 6.0, 0.2)),
+            transform: Transform::from_xyz(0.0, 3.0, -125.0),
+            material: rear_wall_mat, // FIXED: Now utilizes the custom texture slot blueprint!
             ..default()
         },
         OnTutorialLayer,

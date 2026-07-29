@@ -181,8 +181,22 @@ fn populate_buttons(
             ));
 
             let core_team = [
-                ("ARITRASH SARKAR", "UI Architecture / Gameplay Mechanics / Sound Design / Finite State Machines"),
-                ("ROHEET PURKAYASTHA", "Distributed Network Engineering / Map Topography / Character Design Infrastructure"),
+                (
+                    "ARITRASH SARKAR",
+                    "Technical Director / Gameplay Systems / UI Architecture / Audio Design / Finite State Machines"
+                ),
+                (
+                    "ROHEET PURKAYASTHA",
+                    "Lead Multiplayer & Network Systems / Gameplay Systems / Distributed Networking"
+                ),
+                (
+                    "SANJANA SEAL",
+                    "Level Systems Engineering / Map Architecture / World Layout Design"
+                ),
+                (
+                    "SOUMAK MUKHERJEE",
+                    "Lead Technical Artist / 3D Assets / Blender / Environment Modelling"
+                ),
             ];
 
             for (developer, systems) in core_team {
