@@ -309,6 +309,7 @@ fn menu_action_system(
     mut text_query: Query<&mut Text>,
     mut app_exit_events: EventWriter<AppExit>,
     mut screen_state: ResMut<MenuScreenState>,
+    mut next_state: ResMut<NextState<AppState>>,
     asset_server: Res<AssetServer>,
     mut commands: Commands,
 ) {
@@ -356,7 +357,8 @@ fn menu_action_system(
                         *screen_state = MenuScreenState::Credits;
                     }
                     MenuButtonAction::HowToPlay => {
-                        println!("How to Play triggered!");
+                        *screen_state = MenuScreenState::Main;
+                        next_state.set(AppState::Tutorial);
                     }
                     MenuButtonAction::CreateServer => {
                         println!("Create Server pipeline active!");

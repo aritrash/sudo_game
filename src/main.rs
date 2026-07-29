@@ -3,6 +3,7 @@ mod menu;
 mod video;
 mod agegate;
 mod loading;
+mod tutorial;
 
 use bevy::prelude::*;
 use splash::SplashPlugin;
@@ -19,7 +20,8 @@ pub enum AppState {
     SplashBoot,
     AgeGate,
     Loading,
-    MainMenu, 
+    MainMenu,
+    Tutorial,
 }
 
 fn main() {
@@ -31,17 +33,19 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "S.U.D.O. - System User Deception Override".into(),
-                resolution: (1280.0, 720.0).into(), 
+                resolution: (1280.0, 720.0).into(),
                 ..default()
             }),
             ..default()
         }))
         .init_state::<AppState>()
+        .insert_resource(Msaa::Sample4)
         .add_plugins(SplashPlugin)
         .add_plugins(agegate::AgeGatePlugin)
         .add_plugins(loading::LoadingPlugin)
         .add_plugins(MenuPlugin)
         .add_plugins(video::VideoPlugin)
+        .add_plugins(tutorial::TutorialPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }
