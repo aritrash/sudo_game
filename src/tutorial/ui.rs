@@ -17,11 +17,11 @@
 
 use bevy::prelude::*;
 
-use crate::AppState;
 use crate::tutorial::objectives::TutorialObjective;
 use crate::tutorial::pong::{self, PongMessage};
 use crate::tutorial::stages::TutorialStage;
 use crate::tutorial::task::TutorialTaskState;
+use crate::AppState;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
@@ -161,25 +161,20 @@ impl Plugin for TutorialUiPlugin {
             ////////////////////////////////////////////////////////////////////
             // Resources
             ////////////////////////////////////////////////////////////////////
-
             .init_resource::<DialogueState>()
             .init_resource::<ObjectiveState>()
             .init_resource::<ContinuePrompt>()
             .init_resource::<UiAnimationState>()
-
             ////////////////////////////////////////////////////////////////////
             // Events
             ////////////////////////////////////////////////////////////////////
-
             .add_event::<ShowDialogueEvent>()
             .add_event::<HideDialogueEvent>()
             .add_event::<UpdateObjectiveEvent>()
             .add_event::<PlayVoiceEvent>()
-
             ////////////////////////////////////////////////////////////////////
             // Setup Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 OnEnter(AppState::Tutorial),
                 (
@@ -188,11 +183,9 @@ impl Plugin for TutorialUiPlugin {
                     present_initial_tutorial_state,
                 ),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Dialogue Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
@@ -201,13 +194,12 @@ impl Plugin for TutorialUiPlugin {
                     update_dialogue,
                     show_continue_prompt,
                     hide_continue_prompt,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Objective Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
@@ -216,13 +208,12 @@ impl Plugin for TutorialUiPlugin {
                     refresh_objective,
                     show_objective_panel,
                     hide_objective_panel,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Audio Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
@@ -230,13 +221,12 @@ impl Plugin for TutorialUiPlugin {
                     stop_voice_over,
                     replay_voice_over,
                     play_completion_sound,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Animation Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
@@ -245,13 +235,12 @@ impl Plugin for TutorialUiPlugin {
                     animate_objective_panel,
                     animate_continue_prompt,
                     animate_completion_screen,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Input Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
@@ -259,20 +248,20 @@ impl Plugin for TutorialUiPlugin {
                     replay_dialogue,
                     dismiss_completion_screen,
                     block_input_during_animation,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Update Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 (
                     synchronize_dialogue_state,
                     synchronize_objective_state,
                     update_animation_state,
-                ).run_if(in_state(AppState::Tutorial)),
+                )
+                    .run_if(in_state(AppState::Tutorial)),
             );
     }
 }
@@ -282,10 +271,7 @@ impl Plugin for TutorialUiPlugin {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /// Creates the complete Orientation Facility UI.
-pub fn setup_tutorial_ui(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+pub fn setup_tutorial_ui(mut commands: Commands, asset_server: Res<AssetServer>) {
     let regular_font: Handle<Font> = asset_server.load("fonts/Inter_18pt-Regular.ttf");
     let bold_font: Handle<Font> = asset_server.load("fonts/Inter_18pt-Bold.ttf");
 
@@ -304,148 +290,142 @@ pub fn setup_tutorial_ui(
             TutorialUi,
         ))
         .with_children(|root| {
-            root.spawn((
-                NodeBundle {
-                    style: Style {
-                        width: Val::Percent(30.0),
-                        height: Val::Percent(100.0),
-                        justify_content: JustifyContent::FlexStart,
-                        align_items: AlignItems::FlexStart,
-                        padding: UiRect::all(Val::Px(24.0)),
-                        ..default()
-                    },
+            root.spawn((NodeBundle {
+                style: Style {
+                    width: Val::Percent(30.0),
+                    height: Val::Percent(100.0),
+                    justify_content: JustifyContent::FlexStart,
+                    align_items: AlignItems::FlexStart,
+                    padding: UiRect::all(Val::Px(24.0)),
                     ..default()
                 },
-            ))
-            .with_children(|left| {
-                left.spawn((
-                    ObjectivePanel,
-                    TutorialObjectivePanel,
-                    NodeBundle {
-                        style: Style {
-                            width: Val::Px(OBJECTIVE_WIDTH),
-                            height: Val::Px(OBJECTIVE_HEIGHT),
-                            flex_direction: FlexDirection::Column,
-                            padding: UiRect::all(Val::Px(16.0)),
-                            row_gap: Val::Px(8.0),
-                            ..default()
-                        },
-                        background_color: Color::rgba(0.05, 0.05, 0.08, 0.90).into(),
-                        visibility: Visibility::Hidden,
-                        ..default()
-                    },
-                ))
-                .with_children(|panel| {
-                    panel.spawn((
-                        ObjectiveTitle,
-                        TextBundle::from_section(
-                            "OBJECTIVE",
-                            TextStyle {
-                                font: bold_font.clone(),
-                                font_size: 24.0,
-                                color: Color::WHITE,
+                ..default()
+            },))
+                .with_children(|left| {
+                    left.spawn((
+                        ObjectivePanel,
+                        TutorialObjectivePanel,
+                        NodeBundle {
+                            style: Style {
+                                width: Val::Px(OBJECTIVE_WIDTH),
+                                height: Val::Px(OBJECTIVE_HEIGHT),
+                                flex_direction: FlexDirection::Column,
+                                padding: UiRect::all(Val::Px(16.0)),
+                                row_gap: Val::Px(8.0),
+                                ..default()
                             },
-                        ),
-                    ));
-
-                    panel.spawn((
-                        ObjectiveDescription,
-                        TextBundle::from_section(
-                            "Loading objective...",
-                            TextStyle {
-                                font: regular_font.clone(),
-                                font_size: 18.0,
-                                color: Color::rgb(0.85, 0.85, 0.85),
-                            },
-                        ),
-                    ));
-                });
-            });
-
-            root.spawn((
-                NodeBundle {
-                    style: Style {
-                        width: Val::Percent(70.0),
-                        height: Val::Percent(100.0),
-                        justify_content: JustifyContent::FlexEnd,
-                        align_items: AlignItems::Center,
-                        padding: UiRect::all(Val::Px(24.0)),
-                        ..default()
-                    },
-                    ..default()
-                },
-            ))
-            .with_children(|right| {
-                right.spawn((
-                    DialoguePanel,
-                    TutorialDialogue,
-                    NodeBundle {
-                        style: Style {
-                            width: Val::Px(DIALOGUE_WIDTH),
-                            height: Val::Px(DIALOGUE_HEIGHT),
-                            flex_direction: FlexDirection::Column,
-                            padding: UiRect::all(Val::Px(18.0)),
-                            row_gap: Val::Px(10.0),
-                            ..default()
-                        },
-                        background_color: Color::rgba(0.02, 0.02, 0.04, 0.94).into(),
-                        visibility: Visibility::Hidden,
-                        ..default()
-                    },
-                ))
-                .with_children(|dialogue| {
-                    dialogue.spawn((
-                        DialogueTitle,
-                        TextBundle::from_section(
-                            "PONG",
-                            TextStyle {
-                                font: bold_font.clone(),
-                                font_size: 26.0,
-                                color: Color::WHITE,
-                            },
-                        ),
-                    ));
-
-                    dialogue.spawn((
-                        DialogueBody,
-                        TextBundle::from_section(
-                            "",
-                            TextStyle {
-                                font: regular_font.clone(),
-                                font_size: 20.0,
-                                color: Color::WHITE,
-                            },
-                        ),
-                    ));
-
-                    dialogue.spawn((
-                        ContinueText,
-                        TutorialContinuePrompt,
-                        TextBundle {
-                            text: Text::from_section(
-                                "Press [E] to continue",
-                                TextStyle {
-                                    font: regular_font.clone(),
-                                    font_size: 16.0,
-                                    color: Color::rgb(0.65, 0.65, 0.65),
-                                },
-                            ),
+                            background_color: Color::rgba(0.05, 0.05, 0.08, 0.90).into(),
                             visibility: Visibility::Hidden,
                             ..default()
                         },
-                    ));
+                    ))
+                    .with_children(|panel| {
+                        panel.spawn((
+                            ObjectiveTitle,
+                            TextBundle::from_section(
+                                "OBJECTIVE",
+                                TextStyle {
+                                    font: bold_font.clone(),
+                                    font_size: 24.0,
+                                    color: Color::WHITE,
+                                },
+                            ),
+                        ));
+
+                        panel.spawn((
+                            ObjectiveDescription,
+                            TextBundle::from_section(
+                                "Loading objective...",
+                                TextStyle {
+                                    font: regular_font.clone(),
+                                    font_size: 18.0,
+                                    color: Color::rgb(0.85, 0.85, 0.85),
+                                },
+                            ),
+                        ));
+                    });
                 });
-            });
+
+            root.spawn((NodeBundle {
+                style: Style {
+                    width: Val::Percent(70.0),
+                    height: Val::Percent(100.0),
+                    justify_content: JustifyContent::FlexEnd,
+                    align_items: AlignItems::Center,
+                    padding: UiRect::all(Val::Px(24.0)),
+                    ..default()
+                },
+                ..default()
+            },))
+                .with_children(|right| {
+                    right
+                        .spawn((
+                            DialoguePanel,
+                            TutorialDialogue,
+                            NodeBundle {
+                                style: Style {
+                                    width: Val::Px(DIALOGUE_WIDTH),
+                                    height: Val::Px(DIALOGUE_HEIGHT),
+                                    flex_direction: FlexDirection::Column,
+                                    padding: UiRect::all(Val::Px(18.0)),
+                                    row_gap: Val::Px(10.0),
+                                    ..default()
+                                },
+                                background_color: Color::rgba(0.02, 0.02, 0.04, 0.94).into(),
+                                visibility: Visibility::Hidden,
+                                ..default()
+                            },
+                        ))
+                        .with_children(|dialogue| {
+                            dialogue.spawn((
+                                DialogueTitle,
+                                TextBundle::from_section(
+                                    "PONG",
+                                    TextStyle {
+                                        font: bold_font.clone(),
+                                        font_size: 26.0,
+                                        color: Color::WHITE,
+                                    },
+                                ),
+                            ));
+
+                            dialogue.spawn((
+                                DialogueBody,
+                                TextBundle::from_section(
+                                    "",
+                                    TextStyle {
+                                        font: regular_font.clone(),
+                                        font_size: 20.0,
+                                        color: Color::WHITE,
+                                    },
+                                ),
+                            ));
+
+                            dialogue.spawn((
+                                ContinueText,
+                                TutorialContinuePrompt,
+                                TextBundle {
+                                    text: Text::from_section(
+                                        "Press [E] to continue",
+                                        TextStyle {
+                                            font: regular_font.clone(),
+                                            font_size: 16.0,
+                                            color: Color::rgb(0.65, 0.65, 0.65),
+                                        },
+                                    ),
+                                    visibility: Visibility::Hidden,
+                                    ..default()
+                                },
+                            ));
+                        });
+                });
         });
 }
 
 /// Creates the tutorial completion overlay.
 ///
 /// Hidden until the player graduates.
-pub fn setup_completion_screen(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
+pub fn setup_completion_screen(mut commands: Commands, asset_server: Res<AssetServer>) {
     let bold_font: Handle<Font> = asset_server.load("fonts/Inter_18pt-Bold.ttf");
 
     commands
@@ -620,10 +600,7 @@ pub fn hide_continue_prompt(
 pub fn initialize_objective(
     objective: Res<TutorialObjective>,
     mut title: Query<&mut Text, (With<ObjectiveTitle>, Without<ObjectiveDescription>)>,
-    mut description: Query<
-        &mut Text,
-        (With<ObjectiveDescription>, Without<ObjectiveTitle>),
-    >,
+    mut description: Query<&mut Text, (With<ObjectiveDescription>, Without<ObjectiveTitle>)>,
 ) {
     if let Ok(mut objective_title) = title.get_single_mut() {
         objective_title.sections[0].value = objective.title.to_string();
@@ -638,10 +615,7 @@ pub fn initialize_objective(
 pub fn update_objective(
     objective: Res<TutorialObjective>,
     mut title: Query<&mut Text, (With<ObjectiveTitle>, Without<ObjectiveDescription>)>,
-    mut description: Query<
-        &mut Text,
-        (With<ObjectiveDescription>, Without<ObjectiveTitle>),
-    >,
+    mut description: Query<&mut Text, (With<ObjectiveDescription>, Without<ObjectiveTitle>)>,
 ) {
     if !objective.is_changed() {
         return;
@@ -665,10 +639,7 @@ pub fn refresh_objective(
     mut refresh_events: EventReader<UpdateObjectiveEvent>,
     objective: Res<TutorialObjective>,
     mut title: Query<&mut Text, (With<ObjectiveTitle>, Without<ObjectiveDescription>)>,
-    mut description: Query<
-        &mut Text,
-        (With<ObjectiveDescription>, Without<ObjectiveTitle>),
-    >,
+    mut description: Query<&mut Text, (With<ObjectiveDescription>, Without<ObjectiveTitle>)>,
 ) {
     if refresh_events.is_empty() {
         return;
@@ -732,11 +703,13 @@ pub fn play_voice_over(
 ) {
     for event in events.read() {
         if let Some(voice_path) = event.voice_path {
-            commands.spawn(AudioBundle {
-                source: asset_server.load(voice_path),
-                settings: PlaybackSettings::ONCE,
-                ..default()
-            }).insert(TutorialVoiceAudio);
+            commands
+                .spawn(AudioBundle {
+                    source: asset_server.load(voice_path),
+                    settings: PlaybackSettings::ONCE,
+                    ..default()
+                })
+                .insert(TutorialVoiceAudio);
         }
     }
 }
@@ -779,11 +752,13 @@ pub fn replay_voice_over(
         return;
     };
 
-    commands.spawn(AudioBundle {
-        source: asset_server.load(voice_path),
-        settings: PlaybackSettings::ONCE,
-        ..default()
-    }).insert(TutorialVoiceAudio);
+    commands
+        .spawn(AudioBundle {
+            source: asset_server.load(voice_path),
+            settings: PlaybackSettings::ONCE,
+            ..default()
+        })
+        .insert(TutorialVoiceAudio);
 }
 
 /// Plays the tutorial completion sound.
@@ -862,11 +837,7 @@ pub fn animate_objective_panel(
     objective_state: Res<ObjectiveState>,
     mut panels: Query<&mut BackgroundColor, With<ObjectivePanel>>,
 ) {
-    let alpha = if objective_state.visible {
-        0.90
-    } else {
-        0.0
-    };
+    let alpha = if objective_state.visible { 0.90 } else { 0.0 };
 
     for mut color in &mut panels {
         color.0.set_a(alpha);
@@ -996,7 +967,6 @@ pub fn block_input_during_animation(
 // Update Systems
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 /// Keeps the dialogue state synchronized with its visibility.
 pub fn synchronize_dialogue_state(
     dialogue_state: Res<DialogueState>,
@@ -1032,9 +1002,7 @@ pub fn synchronize_objective_state(
 /// Resets transient UI state after animations complete.
 ///
 /// This prepares the interface for the next interaction.
-pub fn update_animation_state(
-    mut animation_state: ResMut<UiAnimationState>,
-) {
+pub fn update_animation_state(mut animation_state: ResMut<UiAnimationState>) {
     if animation_state.busy {
         animation_state.busy = false;
     }

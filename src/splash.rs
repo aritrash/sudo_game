@@ -1,5 +1,5 @@
-use bevy::prelude::*;
 use super::AppState;
+use bevy::prelude::*;
 
 pub struct SplashPlugin;
 
@@ -8,21 +8,27 @@ impl Plugin for SplashPlugin {
         app
             // Start the initial 2.5 second timer for the Studio screen
             .insert_resource(SplashTimer(Timer::from_seconds(2.5, TimerMode::Once)))
-            
             // Studio Screen Runlevel
             .add_systems(OnEnter(AppState::SplashStudio), setup_studio)
-            .add_systems(Update, tick_splash_timer.run_if(in_state(AppState::SplashStudio)))
+            .add_systems(
+                Update,
+                tick_splash_timer.run_if(in_state(AppState::SplashStudio)),
+            )
             .add_systems(OnExit(AppState::SplashStudio), cleanup_splash)
-            
             // Warning Screen Runlevel
             .add_systems(OnEnter(AppState::SplashWarning), setup_warning)
-            .add_systems(Update, tick_splash_timer.run_if(in_state(AppState::SplashWarning)))
+            .add_systems(
+                Update,
+                tick_splash_timer.run_if(in_state(AppState::SplashWarning)),
+            )
             .add_systems(OnExit(AppState::SplashWarning), cleanup_splash)
-            
             // Fake Boot Sequence Runlevel
             .insert_resource(BootSequence::default())
             .add_systems(OnEnter(AppState::SplashBoot), setup_boot)
-            .add_systems(Update, animate_boot_console.run_if(in_state(AppState::SplashBoot)))
+            .add_systems(
+                Update,
+                animate_boot_console.run_if(in_state(AppState::SplashBoot)),
+            )
             .add_systems(OnExit(AppState::SplashBoot), cleanup_splash);
     }
 }
@@ -80,7 +86,9 @@ fn tick_splash_timer(
             AppState::SplashStudio => {
                 next_state.set(AppState::SplashWarning);
                 // Give them 4 seconds to read the warning text
-                timer.0.set_duration(std::time::Duration::from_secs_f32(4.0));
+                timer
+                    .0
+                    .set_duration(std::time::Duration::from_secs_f32(4.0));
                 timer.0.reset();
             }
             AppState::SplashWarning => {
@@ -210,21 +218,30 @@ fn setup_boot(mut commands: Commands, asset_server: Res<AssetServer>) {
 
             // Subtitle
             parent.spawn(TextBundle::from_sections([
-                TextSection::new("System User ", TextStyle {
-                    font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
-                    font_size: 24.0,
-                    color: Color::WHITE,
-                }),
-                TextSection::new("Deception ", TextStyle {
-                    font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
-                    font_size: 24.0,
-                    color: Color::RED,
-                }),
-                TextSection::new("Override", TextStyle {
-                    font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
-                    font_size: 24.0,
-                    color: Color::WHITE,
-                }),
+                TextSection::new(
+                    "System User ",
+                    TextStyle {
+                        font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
+                        font_size: 24.0,
+                        color: Color::WHITE,
+                    },
+                ),
+                TextSection::new(
+                    "Deception ",
+                    TextStyle {
+                        font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
+                        font_size: 24.0,
+                        color: Color::RED,
+                    },
+                ),
+                TextSection::new(
+                    "Override",
+                    TextStyle {
+                        font: asset_server.load("fonts/JetBrainsMono-Regular.ttf"),
+                        font_size: 24.0,
+                        color: Color::WHITE,
+                    },
+                ),
             ]));
 
             // ESRB Logo (Absolute Bottom Right)
@@ -249,7 +266,8 @@ fn setup_boot(mut commands: Commands, asset_server: Res<AssetServer>) {
                         font_size: 16.0,
                         color: Color::rgb(0.0, 0.8, 0.0), // Terminal Green
                     },
-                ).with_style(Style {
+                )
+                .with_style(Style {
                     position_type: PositionType::Absolute,
                     bottom: Val::Px(20.0),
                     left: Val::Px(20.0),

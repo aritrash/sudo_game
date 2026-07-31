@@ -40,10 +40,13 @@ pub fn spawn_video_pipeline(
     width: u32,
     height: u32,
 ) -> (Handle<Image>, Receiver<Vec<u8>>, gst::Pipeline) {
-    
     // 1. Create a blank Bevy texture that we will overwrite every frame
     let image = Image::new_fill(
-        Extent3d { width, height, depth_or_array_layers: 1 },
+        Extent3d {
+            width,
+            height,
+            depth_or_array_layers: 1,
+        },
         TextureDimension::D2,
         &[0, 0, 0, 255], // Start black
         TextureFormat::Rgba8UnormSrgb,
@@ -65,33 +68,41 @@ pub fn spawn_video_pipeline(
         "uridecodebin uri={} ! videoconvert ! video/x-raw,format=RGBA,width={},height={} ! appsink name=sink drop=true max-buffers=2",
         uri, width, height
     );
-    
+
     let pipeline = gst::parse::launch(&pipeline_str)
         .unwrap()
         .downcast::<gst::Pipeline>()
         .unwrap();
-    
+
     // 5. Connect to the appsink to pull the raw bytes
     let sink = pipeline
         .by_name("sink")
         .unwrap()
         .downcast::<gst_app::AppSink>()
         .unwrap();
-    
+
     sink.set_callbacks(
         gst_app::AppSinkCallbacks::builder()
             .new_sample(move |appsink| {
                 let sample = appsink.pull_sample().map_err(|_| gst::FlowError::Eos)?;
                 let buffer = sample.buffer().ok_or_else(|| {
-                    gst::element_error!(appsink, gst::ResourceError::Failed, ("Failed to get buffer"));
+                    gst::element_error!(
+                        appsink,
+                        gst::ResourceError::Failed,
+                        ("Failed to get buffer")
+                    );
                     gst::FlowError::Error
                 })?;
-                
+
                 let map = buffer.map_readable().map_err(|_| {
-                    gst::element_error!(appsink, gst::ResourceError::Failed, ("Failed to map buffer"));
+                    gst::element_error!(
+                        appsink,
+                        gst::ResourceError::Failed,
+                        ("Failed to map buffer")
+                    );
                     gst::FlowError::Error
                 })?;
-                
+
                 // Fire the bytes across the channel to the Bevy thread
                 let _ = sender.send(map.as_slice().to_vec());
                 Ok(gst::FlowSuccess::Ok)
@@ -109,7 +120,7 @@ pub fn spawn_video_pipeline(
 fn update_video_texture(
     mut images: ResMut<Assets<Image>>,
     query: Query<&VideoStream>,
-    mut frame_count: Local<u32>, 
+    mut frame_count: Local<u32>,
 ) {
     for stream in query.iter() {
         // 1. POLL GSTREAMER FOR ERRORS AND END-OF-STREAM

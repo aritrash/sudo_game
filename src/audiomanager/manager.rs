@@ -9,24 +9,13 @@ use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
 use bevy_kira_audio::AudioPlugin;
 
-use crate::audiomanager::music::{
-    MusicTrack,
-    PlayMusicEvent,
-    StopMusicEvent,
-};
+use crate::audiomanager::music::{MusicTrack, PlayMusicEvent, StopMusicEvent};
 
-use crate::audiomanager::pong::{
-    PlayPongVoiceEvent,
-    StopPongVoiceEvent,
-    PongVoice,
-};
+use crate::audiomanager::pong::{PlayPongVoiceEvent, PongVoice, StopPongVoiceEvent};
 
 use crate::audiomanager::settings::AudioSettings;
 
-use crate::audiomanager::sfx::{
-    PlaySfxEvent,
-    SoundEffect,
-};
+use crate::audiomanager::sfx::{PlaySfxEvent, SoundEffect};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Audio Channels
@@ -58,41 +47,40 @@ pub struct AudioManagerPlugin;
 
 impl Plugin for AudioManagerPlugin {
     fn build(&self, app: &mut App) {
-
         app
-        //
-        // Events
-        //
-        .add_event::<PlayMusicEvent>()
-        .add_event::<StopMusicEvent>()
-        .add_event::<PlaySfxEvent>()
-        .add_event::<PlayPongVoiceEvent>()
-        .add_event::<StopPongVoiceEvent>()
-
-        //
-        // Channels
-        //
-        .add_audio_channel::<MusicChannel>()
-        .add_audio_channel::<SfxChannel>()
-        .add_audio_channel::<VoiceChannel>()
-
-        //
-        // Resources
-        //
-        .init_resource::<CurrentMusic>()
-        .init_resource::<AudioSettings>()
-
-        //
-        // Systems
-        //
-        .add_systems(Update, (
-            play_music_system,
-            stop_music_system,
-            play_sfx_system,
-            play_pong_voice_system,
-            stop_pong_voice_system,
-            update_audio_settings_system,
-        ));
+            //
+            // Events
+            //
+            .add_event::<PlayMusicEvent>()
+            .add_event::<StopMusicEvent>()
+            .add_event::<PlaySfxEvent>()
+            .add_event::<PlayPongVoiceEvent>()
+            .add_event::<StopPongVoiceEvent>()
+            //
+            // Channels
+            //
+            .add_audio_channel::<MusicChannel>()
+            .add_audio_channel::<SfxChannel>()
+            .add_audio_channel::<VoiceChannel>()
+            //
+            // Resources
+            //
+            .init_resource::<CurrentMusic>()
+            .init_resource::<AudioSettings>()
+            //
+            // Systems
+            //
+            .add_systems(
+                Update,
+                (
+                    play_music_system,
+                    stop_music_system,
+                    play_sfx_system,
+                    play_pong_voice_system,
+                    stop_pong_voice_system,
+                    update_audio_settings_system,
+                ),
+            );
     }
 }
 
@@ -110,7 +98,6 @@ fn play_music_system(
     mut current_music: ResMut<CurrentMusic>,
 ) {
     for event in events.read() {
-
         //
         // Already playing?
         //
@@ -131,9 +118,7 @@ fn play_music_system(
         //
         // Play looped
         //
-        music
-            .play(handle)
-            .looped();
+        music.play(handle).looped();
 
         current_music.track = Some(event.track);
     }
@@ -172,7 +157,6 @@ fn play_sfx_system(
     sfx: Res<AudioChannel<SfxChannel>>,
 ) {
     for event in events.read() {
-
         let handle = asset_server.load(event.effect.asset_path());
 
         sfx.play(handle);
@@ -191,7 +175,6 @@ fn play_pong_voice_system(
     voice: Res<AudioChannel<VoiceChannel>>,
 ) {
     for event in events.read() {
-
         //
         // Interrupt any currently playing narration.
         //

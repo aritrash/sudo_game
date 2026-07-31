@@ -1,12 +1,11 @@
-use bevy::prelude::*;
 use crate::AppState;
+use bevy::prelude::*;
 
 pub struct LoadingPlugin;
 
 impl Plugin for LoadingPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<LoadingTimer>()
+        app.init_resource::<LoadingTimer>()
             .add_systems(OnEnter(AppState::Loading), setup_loading_screen)
             .add_systems(
                 Update,
@@ -49,69 +48,74 @@ fn setup_loading_screen(mut commands: Commands, asset_server: Res<AssetServer>) 
         ))
         .with_children(|parent| {
             // Bottom-Right Placement Layout Container
-            parent.spawn(NodeBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    bottom: Val::Px(40.0),
-                    right: Val::Px(40.0),
-                    flex_direction: FlexDirection::Row,
-                    align_items: AlignItems::Center,
-                    column_gap: Val::Px(15.0),
-                    ..default()
-                },
-                ..default()
-            }).with_children(|container| {
-                // "Please Wait" Text
-                container.spawn(TextBundle::from_section(
-                    "PLEASE WAIT",
-                    TextStyle {
-                        font: font_mono.clone(),
-                        font_size: 20.0,
-                        color: Color::rgb(0.7, 0.7, 0.7),
-                    },
-                ));
-
-                // Clean Procedural Circular Spinner Parent Node
-                container.spawn((
-                    NodeBundle {
-                        style: Style {
-                            width: Val::Px(30.0),
-                            height: Val::Px(30.0),
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            ..default()
-                        },
+            parent
+                .spawn(NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        bottom: Val::Px(40.0),
+                        right: Val::Px(40.0),
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(15.0),
                         ..default()
                     },
-                    SpinnerMarker,
-                )).with_children(|spinner_root| {
-                    // Spawning 8 nodes in a precise dot ring mimicking a clean buffer icon
-                    let dot_count = 8;
-                    for i in 0..dot_count {
-                        let angle = (i as f32) * (2.0 * std::f32::consts::PI / dot_count as f32);
-                        let radius = 10.0;
-                        let x = angle.cos() * radius;
-                        let y = angle.sin() * radius;
+                    ..default()
+                })
+                .with_children(|container| {
+                    // "Please Wait" Text
+                    container.spawn(TextBundle::from_section(
+                        "PLEASE WAIT",
+                        TextStyle {
+                            font: font_mono.clone(),
+                            font_size: 20.0,
+                            color: Color::rgb(0.7, 0.7, 0.7),
+                        },
+                    ));
 
-                        // Smoothly shade the colors around the circle to create the trailing gradient
-                        let alpha = (i as f32 + 1.0) / dot_count as f32;
-                        let dot_color = Color::rgba(1.0, 1.0, 1.0, alpha);
-
-                        spinner_root.spawn(NodeBundle {
-                            style: Style {
-                                position_type: PositionType::Absolute,
-                                width: Val::Px(4.0),
-                                height: Val::Px(4.0),
-                                left: Val::Px(13.0 + x), // Centers the points inside the box boundary
-                                top: Val::Px(13.0 + y),
+                    // Clean Procedural Circular Spinner Parent Node
+                    container
+                        .spawn((
+                            NodeBundle {
+                                style: Style {
+                                    width: Val::Px(30.0),
+                                    height: Val::Px(30.0),
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
                                 ..default()
                             },
-                            background_color: dot_color.into(),
-                            ..default()
+                            SpinnerMarker,
+                        ))
+                        .with_children(|spinner_root| {
+                            // Spawning 8 nodes in a precise dot ring mimicking a clean buffer icon
+                            let dot_count = 8;
+                            for i in 0..dot_count {
+                                let angle =
+                                    (i as f32) * (2.0 * std::f32::consts::PI / dot_count as f32);
+                                let radius = 10.0;
+                                let x = angle.cos() * radius;
+                                let y = angle.sin() * radius;
+
+                                // Smoothly shade the colors around the circle to create the trailing gradient
+                                let alpha = (i as f32 + 1.0) / dot_count as f32;
+                                let dot_color = Color::rgba(1.0, 1.0, 1.0, alpha);
+
+                                spinner_root.spawn(NodeBundle {
+                                    style: Style {
+                                        position_type: PositionType::Absolute,
+                                        width: Val::Px(4.0),
+                                        height: Val::Px(4.0),
+                                        left: Val::Px(13.0 + x), // Centers the points inside the box boundary
+                                        top: Val::Px(13.0 + y),
+                                        ..default()
+                                    },
+                                    background_color: dot_color.into(),
+                                    ..default()
+                                });
+                            }
                         });
-                    }
                 });
-            });
         });
 }
 

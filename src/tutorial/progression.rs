@@ -17,11 +17,7 @@ use bevy::prelude::*;
 
 use crate::tutorial::objectives::TutorialObjective;
 use crate::tutorial::stages::TutorialStage;
-use crate::tutorial::ui::{
-    ShowDialogueEvent,
-    UpdateObjectiveEvent,
-    TutorialCompletedEvent,
-};
+use crate::tutorial::ui::{ShowDialogueEvent, TutorialCompletedEvent, UpdateObjectiveEvent};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -44,33 +40,21 @@ pub struct TutorialProgressionPlugin;
 impl Plugin for TutorialProgressionPlugin {
     fn build(&self, app: &mut App) {
         app
-
             ////////////////////////////////////////////////////////////////////
             // Resources
             ////////////////////////////////////////////////////////////////////
-
             .init_resource::<TutorialStage>()
             .init_resource::<TutorialObjective>()
-
             ////////////////////////////////////////////////////////////////////
             // Events
             ////////////////////////////////////////////////////////////////////
-
             .add_event::<ProgressTutorialEvent>()
             .add_event::<ResetTutorialEvent>()
             .add_event::<TutorialCompletedEvent>()
-
             ////////////////////////////////////////////////////////////////////
             // Systems
             ////////////////////////////////////////////////////////////////////
-
-            .add_systems(
-                Update,
-                (
-                    progress_tutorial,
-                    reset_tutorial,
-                ),
-            );
+            .add_systems(Update, (progress_tutorial, reset_tutorial));
     }
 }
 

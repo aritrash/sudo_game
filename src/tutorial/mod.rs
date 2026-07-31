@@ -23,8 +23,7 @@ pub struct TutorialPlugin;
 
 impl Plugin for TutorialPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<player::TutorialPlayer>()
+        app.init_resource::<player::TutorialPlayer>()
             .init_resource::<task::TutorialTaskState>()
             .add_plugins((
                 TutorialUiPlugin,
@@ -33,10 +32,7 @@ impl Plugin for TutorialPlugin {
                 TutorialPausePlugin,
                 TutorialCleanupPlugin,
             ))
-            .add_systems(
-                OnEnter(AppState::Tutorial),
-                initialize_tutorial_state,
-            );
+            .add_systems(OnEnter(AppState::Tutorial), initialize_tutorial_state);
     }
 }
 

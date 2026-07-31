@@ -1,5 +1,5 @@
-use bevy::{app::AppExit, prelude::*};
 use crate::AppState;
+use bevy::{app::AppExit, prelude::*};
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::Path;
@@ -8,13 +8,11 @@ pub struct AgeGatePlugin;
 
 impl Plugin for AgeGatePlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<AgeInputBuffer>()
+        app.init_resource::<AgeInputBuffer>()
             .add_systems(OnEnter(AppState::AgeGate), check_cache_and_setup)
             .add_systems(
                 Update,
-                (handle_keyboard_input, process_age_gate_logic)
-                    .run_if(in_state(AppState::AgeGate)),
+                (handle_keyboard_input, process_age_gate_logic).run_if(in_state(AppState::AgeGate)),
             )
             .add_systems(OnExit(AppState::AgeGate), cleanup_age_gate);
     }
@@ -33,7 +31,7 @@ struct FeedbackMessageMarker;
 
 #[derive(Resource, Default)]
 struct AgeInputBuffer {
-    digits: String, 
+    digits: String,
     is_rejected: bool,
 }
 
@@ -158,12 +156,14 @@ fn handle_keyboard_input(
     mut display_query: Query<&mut Text, With<DateDisplayMarker>>,
 ) {
     if input_buffer.is_rejected {
-        return; 
+        return;
     }
 
     let mut changed = false;
 
-    if keyboard_input.just_pressed(KeyCode::Backspace) || keyboard_input.just_pressed(KeyCode::Delete) {
+    if keyboard_input.just_pressed(KeyCode::Backspace)
+        || keyboard_input.just_pressed(KeyCode::Delete)
+    {
         if !input_buffer.digits.is_empty() {
             input_buffer.digits.pop();
             changed = true;
@@ -188,7 +188,13 @@ fn handle_keyboard_input(
                 if i == 2 || i == 5 {
                     formatted.push('/');
                 } else {
-                    let digit_idx = if i < 2 { i } else if i < 5 { i - 1 } else { i - 2 };
+                    let digit_idx = if i < 2 {
+                        i
+                    } else if i < 5 {
+                        i - 1
+                    } else {
+                        i - 2
+                    };
                     if let Some(c) = s.chars().nth(digit_idx) {
                         formatted.push(c);
                     } else {
@@ -209,7 +215,8 @@ fn process_age_gate_logic(
     mut feedback_query: Query<&mut Text, With<FeedbackMessageMarker>>,
 ) {
     // Check for standard Enter OR Numpad Enter keys
-    let enter_pressed = keyboard_input.just_pressed(KeyCode::Enter) || keyboard_input.just_pressed(KeyCode::NumpadEnter);
+    let enter_pressed = keyboard_input.just_pressed(KeyCode::Enter)
+        || keyboard_input.just_pressed(KeyCode::NumpadEnter);
 
     if input_buffer.is_rejected {
         if enter_pressed || keyboard_input.just_pressed(KeyCode::Escape) {
@@ -220,7 +227,7 @@ fn process_age_gate_logic(
 
     if enter_pressed && input_buffer.digits.len() == 8 {
         let digits = &input_buffer.digits;
-        
+
         let month: u32 = digits[0..2].parse().unwrap_or(0);
         let day: u32 = digits[2..4].parse().unwrap_or(0);
         let year: i32 = digits[4..8].parse().unwrap_or(0);
@@ -235,15 +242,15 @@ fn process_age_gate_logic(
 
         // HARDCODED COMPUTE SYSTEM FOR THE CURRENT DATE MATRIX (JANUARY 1, 2026)
         // Required criteria: Born on or before January 1, 2013.
-        /* 
+        /*
             ****************************************************************
-            ATTENTION DEVELOPER: 
-            Please remember to update the target_year field in the following 
+            ATTENTION DEVELOPER:
+            Please remember to update the target_year field in the following
             code by +1 every year. This keeps the actual game logic working
             year after year.
             ****************************************************************
         */
-        
+
         let target_year = 2013;
         let target_month = 1;
         let target_day = 1;
@@ -264,7 +271,7 @@ fn process_age_gate_logic(
             if access_granted {
                 feedback.sections[0].value = "ACCESS GRANTED. LOADING MAIN TERMINAL...".to_string();
                 feedback.sections[0].style.color = Color::GREEN;
-                
+
                 if let Ok(mut file) = File::create(CACHE_FILE_PATH) {
                     let json_payload = "{\n  \"age_verified\": true\n}";
                     let _ = file.write_all(json_payload.as_bytes());

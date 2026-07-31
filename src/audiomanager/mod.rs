@@ -10,7 +10,7 @@
 pub mod manager;
 pub mod music;
 pub mod pong;
-pub mod sfx;
 pub mod settings;
+pub mod sfx;
 
 pub use manager::AudioManagerPlugin;

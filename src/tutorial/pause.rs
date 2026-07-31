@@ -11,8 +11,8 @@
 //!
 //! This module intentionally contains no gameplay logic.
 
-use bevy::prelude::*;
 use crate::AppState;
+use bevy::prelude::*;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Resources
@@ -57,51 +57,35 @@ pub struct TutorialPausePlugin;
 impl Plugin for TutorialPausePlugin {
     fn build(&self, app: &mut App) {
         app
-
             ////////////////////////////////////////////////////////////////////
             // Resources
             ////////////////////////////////////////////////////////////////////
-
             .init_resource::<TutorialPauseState>()
-
             ////////////////////////////////////////////////////////////////////
             // Events
             ////////////////////////////////////////////////////////////////////
-
             .add_event::<PauseTutorialEvent>()
             .add_event::<ResumeTutorialEvent>()
             .add_event::<PauseGameEvent>()
             .add_event::<ResumeGameEvent>()
-
             ////////////////////////////////////////////////////////////////////
             // Input Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
                 handle_pause_input.run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Pause Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 Update,
-                (
-                    request_pause,
-                    request_resume,
-                ).run_if(in_state(AppState::Tutorial)),
+                (request_pause, request_resume).run_if(in_state(AppState::Tutorial)),
             )
-
             ////////////////////////////////////////////////////////////////////
             // Update Systems
             ////////////////////////////////////////////////////////////////////
-
-            .add_systems(
-                Update,
-                synchronize_pause_state,
-            );
+            .add_systems(Update, synchronize_pause_state);
     }
 }
 
@@ -173,9 +157,7 @@ pub fn request_resume(
 ///
 /// Other tutorial systems may read TutorialPauseState to disable input,
 /// animations, dialogue progression, or timers while paused.
-pub fn synchronize_pause_state(
-    _pause_state: Res<TutorialPauseState>,
-) {
+pub fn synchronize_pause_state(_pause_state: Res<TutorialPauseState>) {
     // Intentionally left empty.
     //
     // This system exists as a synchronization point for future expansion.

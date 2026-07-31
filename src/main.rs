@@ -1,21 +1,21 @@
-mod splash;
-mod menu;
-mod video;
 mod agegate;
-mod loading;
-mod tutorial;
 mod audiomanager;
 mod gameplay;
+mod loading;
+mod menu;
+mod splash;
+mod tutorial;
+mod video;
 
+use audiomanager::AudioManagerPlugin;
 use bevy::prelude::*;
-use splash::SplashPlugin;
-use menu::MenuPlugin;
 use bevy::render::camera::ClearColorConfig;
 use bevy::window::PrimaryWindow;
-use tutorial::TutorialPlugin;
-use audiomanager::AudioManagerPlugin;
 use bevy_kira_audio::prelude::*;
 use gameplay::GameplayPlugin;
+use menu::MenuPlugin;
+use splash::SplashPlugin;
+use tutorial::TutorialPlugin;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -33,7 +33,10 @@ pub enum AppState {
 fn main() {
     // --- GSTREAMER SANITY CHECK ---
     gstreamer::init().unwrap();
-    println!("GStreamer successfully linked! Version: {}", gstreamer::version_string());
+    println!(
+        "GStreamer successfully linked! Version: {}",
+        gstreamer::version_string()
+    );
     // ------------------------------
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {

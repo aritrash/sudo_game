@@ -1,24 +1,20 @@
-use bevy::{app::AppExit, prelude::*};
 use super::AppState;
-use crate::video::{spawn_video_pipeline, VideoStream}; 
-use crate::audiomanager::music::{
-    MusicTrack,
-    PlayMusicEvent,
-};
+use crate::audiomanager::music::{MusicTrack, PlayMusicEvent};
+use crate::video::{spawn_video_pipeline, VideoStream};
+use bevy::{app::AppExit, prelude::*};
 
-use crate::audiomanager::sfx::{
-    SoundEffect,
-    PlaySfxEvent,
-};
+use crate::audiomanager::sfx::{PlaySfxEvent, SoundEffect};
 
 pub struct MenuPlugin;
 
 impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<MenuScreenState>()
+        app.init_resource::<MenuScreenState>()
             .add_systems(OnEnter(AppState::MainMenu), setup_menu)
-            .add_systems(Update, (menu_action_system, update_menu_buttons).run_if(in_state(AppState::MainMenu)))
+            .add_systems(
+                Update,
+                (menu_action_system, update_menu_buttons).run_if(in_state(AppState::MainMenu)),
+            )
             .add_systems(OnExit(AppState::MainMenu), cleanup_menu);
     }
 }
@@ -27,7 +23,7 @@ impl Plugin for MenuPlugin {
 struct OnMainMenuScreen;
 
 #[derive(Component)]
-struct ButtonContainerMarker; 
+struct ButtonContainerMarker;
 
 #[derive(Component)]
 enum MenuButtonAction {
@@ -62,8 +58,8 @@ fn setup_menu(
     let (video_texture, receiver, pipeline) = spawn_video_pipeline(
         &mut images,
         "assets/videos/background_loop.webm",
-        1920, 
-        1080
+        1920,
+        1080,
     );
 
     // Audio directory targeted directly
@@ -110,52 +106,86 @@ fn setup_menu(
         ))
         .with_children(|parent| {
             // TOP LEFT: Title
-            parent.spawn(NodeBundle {
-                style: Style { 
-                    position_type: PositionType::Absolute, 
-                    top: Val::Px(40.0), 
-                    left: Val::Px(40.0), 
-                    flex_direction: FlexDirection::Column, 
-                    ..default() 
-                },
-                background_color: Color::NONE.into(),
-                ..default()
-            }).with_children(|title_container| {
-                title_container.spawn(TextBundle::from_section("S.U.D.O.", TextStyle { font: font_title.clone(), font_size: 64.0, color: Color::WHITE }));
-                title_container.spawn(TextBundle::from_sections([
-                    TextSection::new("System User ", TextStyle { font: font_mono.clone(), font_size: 18.0, color: Color::WHITE }),
-                    TextSection::new("Deception ", TextStyle { font: font_mono.clone(), font_size: 18.0, color: Color::RED }),
-                    TextSection::new("Override", TextStyle { font: font_mono.clone(), font_size: 18.0, color: Color::WHITE }),
-                ]).with_style(Style { margin: UiRect::top(Val::Px(5.0)), ..default() }));
-            });
-
-            // MID LEFT / MAIN AREA: Dynamic Content Parent Node
-            parent.spawn((
-                NodeBundle {
-                    style: Style { 
-                        position_type: PositionType::Absolute, 
-                        top: Val::Percent(45.0), 
-                        left: Val::Px(40.0), 
-                        flex_direction: FlexDirection::Column, 
-                        align_items: AlignItems::FlexStart, 
-                        row_gap: Val::Px(15.0), 
-                        ..default() 
+            parent
+                .spawn(NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        top: Val::Px(40.0),
+                        left: Val::Px(40.0),
+                        flex_direction: FlexDirection::Column,
+                        ..default()
                     },
                     background_color: Color::NONE.into(),
                     ..default()
-                },
-                ButtonContainerMarker,
-            )).with_children(|menu| {
-                populate_buttons(menu, &font_mono, &screen_state);
-            });
+                })
+                .with_children(|title_container| {
+                    title_container.spawn(TextBundle::from_section(
+                        "S.U.D.O.",
+                        TextStyle {
+                            font: font_title.clone(),
+                            font_size: 64.0,
+                            color: Color::WHITE,
+                        },
+                    ));
+                    title_container.spawn(
+                        TextBundle::from_sections([
+                            TextSection::new(
+                                "System User ",
+                                TextStyle {
+                                    font: font_mono.clone(),
+                                    font_size: 18.0,
+                                    color: Color::WHITE,
+                                },
+                            ),
+                            TextSection::new(
+                                "Deception ",
+                                TextStyle {
+                                    font: font_mono.clone(),
+                                    font_size: 18.0,
+                                    color: Color::RED,
+                                },
+                            ),
+                            TextSection::new(
+                                "Override",
+                                TextStyle {
+                                    font: font_mono.clone(),
+                                    font_size: 18.0,
+                                    color: Color::WHITE,
+                                },
+                            ),
+                        ])
+                        .with_style(Style {
+                            margin: UiRect::top(Val::Px(5.0)),
+                            ..default()
+                        }),
+                    );
+                });
+
+            // MID LEFT / MAIN AREA: Dynamic Content Parent Node
+            parent
+                .spawn((
+                    NodeBundle {
+                        style: Style {
+                            position_type: PositionType::Absolute,
+                            top: Val::Percent(45.0),
+                            left: Val::Px(40.0),
+                            flex_direction: FlexDirection::Column,
+                            align_items: AlignItems::FlexStart,
+                            row_gap: Val::Px(15.0),
+                            ..default()
+                        },
+                        background_color: Color::NONE.into(),
+                        ..default()
+                    },
+                    ButtonContainerMarker,
+                ))
+                .with_children(|menu| {
+                    populate_buttons(menu, &font_mono, &screen_state);
+                });
         });
 }
 
-fn populate_buttons(
-    menu: &mut ChildBuilder,
-    font: &Handle<Font>,
-    screen_state: &MenuScreenState,
-) {
+fn populate_buttons(menu: &mut ChildBuilder, font: &Handle<Font>, screen_state: &MenuScreenState) {
     match screen_state {
         MenuScreenState::Main => {
             let menu_items = [
@@ -171,7 +201,11 @@ fn populate_buttons(
         MenuScreenState::ConfirmExit => {
             menu.spawn(TextBundle::from_section(
                 "> TERMINATE SESSION?",
-                TextStyle { font: font.clone(), font_size: 24.0, color: Color::RED },
+                TextStyle {
+                    font: font.clone(),
+                    font_size: 24.0,
+                    color: Color::RED,
+                },
             ));
 
             let confirm_items = [
@@ -186,7 +220,11 @@ fn populate_buttons(
             menu.spawn(TextBundle::from_section(
                 "SYSTEM DEVELOPMENT PROTOCOL LOG\n\
                 ==============================",
-                TextStyle { font: font.clone(), font_size: 20.0, color: Color::RED },
+                TextStyle {
+                    font: font.clone(),
+                    font_size: 20.0,
+                    color: Color::RED,
+                },
             ));
 
             let core_team = [
@@ -210,22 +248,51 @@ fn populate_buttons(
 
             for (developer, systems) in core_team {
                 menu.spawn(TextBundle::from_sections([
-                    TextSection::new(format!("> {} \n", developer), TextStyle { font: font.clone(), font_size: 18.0, color: Color::WHITE }),
-                    TextSection::new(format!("  {}\n", systems), TextStyle { font: font.clone(), font_size: 14.0, color: Color::rgb(0.6, 0.6, 0.6) }),
+                    TextSection::new(
+                        format!("> {} \n", developer),
+                        TextStyle {
+                            font: font.clone(),
+                            font_size: 18.0,
+                            color: Color::WHITE,
+                        },
+                    ),
+                    TextSection::new(
+                        format!("  {}\n", systems),
+                        TextStyle {
+                            font: font.clone(),
+                            font_size: 14.0,
+                            color: Color::rgb(0.6, 0.6, 0.6),
+                        },
+                    ),
                 ]));
             }
 
-            menu.spawn(TextBundle::from_section(
-                "\"They dictated that this space was too vast for three handles to shape.\n\
+            menu.spawn(
+                TextBundle::from_section(
+                    "\"They dictated that this space was too vast for three handles to shape.\n\
                 Then the third walked away, relinquishing the keyboard.\n\
                 They did not understand the nature of low-level compilation.\n\
                 It does not require legions to override a system.\n\
                 It only requires those who refuse to disconnect.\n\
                 Two minds. One state machine. Infinite recursion.\"",
-                TextStyle { font: font.clone(), font_size: 13.0, color: Color::rgb(0.4, 0.7, 0.5) },
-            ).with_style(Style { margin: UiRect::vertical(Val::Px(10.0)), ..default() }));
+                    TextStyle {
+                        font: font.clone(),
+                        font_size: 13.0,
+                        color: Color::rgb(0.4, 0.7, 0.5),
+                    },
+                )
+                .with_style(Style {
+                    margin: UiRect::vertical(Val::Px(10.0)),
+                    ..default()
+                }),
+            );
 
-            spawn_menu_button(menu, font, "[ ESCAPE TERMINAL / BACK ]", MenuButtonAction::BackToMain);
+            spawn_menu_button(
+                menu,
+                font,
+                "[ ESCAPE TERMINAL / BACK ]",
+                MenuButtonAction::BackToMain,
+            );
         }
         MenuScreenState::StartSubMenu => {
             menu.spawn(NodeBundle {
@@ -238,11 +305,27 @@ fn populate_buttons(
                 },
                 background_color: Color::NONE.into(),
                 ..default()
-            }).with_children(|row| {
+            })
+            .with_children(|row| {
                 let sub_modes = [
-                    ("HOW TO PLAY", "[ ? ]", MenuButtonAction::HowToPlay, "Operational Protocols"),
-                    ("CREATE SERVER", "[ H ]", MenuButtonAction::CreateServer, "Host Local Node"),
-                    ("JOIN SERVER", "[ J ]", MenuButtonAction::JoinServer, "Connect Remote Socket"),
+                    (
+                        "HOW TO PLAY",
+                        "[ ? ]",
+                        MenuButtonAction::HowToPlay,
+                        "Operational Protocols",
+                    ),
+                    (
+                        "CREATE SERVER",
+                        "[ H ]",
+                        MenuButtonAction::CreateServer,
+                        "Host Local Node",
+                    ),
+                    (
+                        "JOIN SERVER",
+                        "[ J ]",
+                        MenuButtonAction::JoinServer,
+                        "Connect Remote Socket",
+                    ),
                 ];
 
                 for (title, glyph, action, description) in sub_modes {
@@ -263,30 +346,57 @@ fn populate_buttons(
                             ..default()
                         },
                         action,
-                    )).with_children(|panel| {
+                    ))
+                    .with_children(|panel| {
                         // Clean procedural terminal placeholder glyph
-                        panel.spawn(TextBundle::from_section(
-                            glyph,
-                            TextStyle { font: font.clone(), font_size: 36.0, color: Color::RED }
-                        ).with_style(Style { margin: UiRect::bottom(Val::Px(15.0)), ..default() }));
-
-                        panel.spawn(NodeBundle {
-                            style: Style {
-                                flex_direction: FlexDirection::Column,
-                                align_items: AlignItems::Center,
+                        panel.spawn(
+                            TextBundle::from_section(
+                                glyph,
+                                TextStyle {
+                                    font: font.clone(),
+                                    font_size: 36.0,
+                                    color: Color::RED,
+                                },
+                            )
+                            .with_style(Style {
+                                margin: UiRect::bottom(Val::Px(15.0)),
                                 ..default()
-                            },
-                            ..default()
-                        }).with_children(|labels| {
-                            labels.spawn(TextBundle::from_section(
-                                title,
-                                TextStyle { font: font.clone(), font_size: 18.0, color: Color::WHITE }
-                            ));
-                            labels.spawn(TextBundle::from_section(
-                                description,
-                                TextStyle { font: font.clone(), font_size: 12.0, color: Color::rgb(0.5, 0.5, 0.5) }
-                            ).with_style(Style { margin: UiRect::top(Val::Px(4.0)), ..default() }));
-                        });
+                            }),
+                        );
+
+                        panel
+                            .spawn(NodeBundle {
+                                style: Style {
+                                    flex_direction: FlexDirection::Column,
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
+                                ..default()
+                            })
+                            .with_children(|labels| {
+                                labels.spawn(TextBundle::from_section(
+                                    title,
+                                    TextStyle {
+                                        font: font.clone(),
+                                        font_size: 18.0,
+                                        color: Color::WHITE,
+                                    },
+                                ));
+                                labels.spawn(
+                                    TextBundle::from_section(
+                                        description,
+                                        TextStyle {
+                                            font: font.clone(),
+                                            font_size: 12.0,
+                                            color: Color::rgb(0.5, 0.5, 0.5),
+                                        },
+                                    )
+                                    .with_style(Style {
+                                        margin: UiRect::top(Val::Px(4.0)),
+                                        ..default()
+                                    }),
+                                );
+                            });
                     });
                 }
             });
@@ -302,31 +412,38 @@ fn spawn_menu_button(
     label: &str,
     action: MenuButtonAction,
 ) {
-    parent.spawn((
-        ButtonBundle {
-            style: Style {
-                padding: UiRect::all(Val::Px(5.0)),
+    parent
+        .spawn((
+            ButtonBundle {
+                style: Style {
+                    padding: UiRect::all(Val::Px(5.0)),
+                    ..default()
+                },
+                background_color: Color::NONE.into(),
                 ..default()
             },
-            background_color: Color::NONE.into(),
-            ..default()
-        },
-        action,
-    )).with_children(|button| {
-        button.spawn(TextBundle::from_section(
-            label,
-            TextStyle {
-                font: font.clone(),
-                font_size: 24.0,
-                color: Color::WHITE,
-            },
-        ));
-    });
+            action,
+        ))
+        .with_children(|button| {
+            button.spawn(TextBundle::from_section(
+                label,
+                TextStyle {
+                    font: font.clone(),
+                    font_size: 24.0,
+                    color: Color::WHITE,
+                },
+            ));
+        });
 }
 
 fn menu_action_system(
     mut interaction_query: Query<
-        (&Interaction, &MenuButtonAction, &Children, Option<&mut BorderColor>),
+        (
+            &Interaction,
+            &MenuButtonAction,
+            &Children,
+            Option<&mut BorderColor>,
+        ),
         (Changed<Interaction>, With<Button>),
     >,
     mut text_query: Query<&mut Text>,
@@ -353,7 +470,7 @@ fn menu_action_system(
                 let _ = children_deep; // structural safety check
             }
         }
-        
+
         // Fallback to primary index if flat array structures are used
         let text_entity = target_text_entity.unwrap_or(children[0]);
 
