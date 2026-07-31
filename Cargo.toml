@@ -5,13 +5,26 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.13"
+
+# UI
 bevy_egui = "0.27"
+
+# Networking
 bevy_renet = "0.0.11"
 bevy-steamworks = "0.13"
+
+# Audio
+bevy_kira_audio = "0.19"
+
+# Serialization
 serde = { version = "1.0", features = ["derive"] }
+
+# Video
 gstreamer = "0.22"
 gstreamer-app = "0.22"
 gstreamer-video = "0.22"
+
+# Utilities
 crossbeam-channel = "0.5"
 
 [features]

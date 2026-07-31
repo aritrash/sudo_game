@@ -4,12 +4,16 @@ mod video;
 mod agegate;
 mod loading;
 mod tutorial;
+mod audiomanager;
 
 use bevy::prelude::*;
 use splash::SplashPlugin;
 use menu::MenuPlugin;
 use bevy::render::camera::ClearColorConfig;
 use bevy::window::PrimaryWindow;
+use tutorial::TutorialPlugin;
+use audiomanager::AudioManagerPlugin;
+use bevy_kira_audio::prelude::*;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -43,9 +47,11 @@ fn main() {
         .add_plugins(SplashPlugin)
         .add_plugins(agegate::AgeGatePlugin)
         .add_plugins(loading::LoadingPlugin)
+        .add_plugins(AudioPlugin)
+        .add_plugins(AudioManagerPlugin)
         .add_plugins(MenuPlugin)
         .add_plugins(video::VideoPlugin)
-        .add_plugins(tutorial::TutorialPlugin)
+        .add_plugins(TutorialPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }

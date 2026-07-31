@@ -1,6 +1,15 @@
 use bevy::{app::AppExit, prelude::*};
 use super::AppState;
 use crate::video::{spawn_video_pipeline, VideoStream}; 
+use crate::audiomanager::music::{
+    MusicTrack,
+    PlayMusicEvent,
+};
+
+use crate::audiomanager::sfx::{
+    SoundEffect,
+    PlaySfxEvent,
+};
 
 pub struct MenuPlugin;
 
@@ -48,6 +57,7 @@ fn setup_menu(
     asset_server: Res<AssetServer>,
     mut images: ResMut<Assets<Image>>,
     screen_state: Res<MenuScreenState>,
+    mut play_music: EventWriter<PlayMusicEvent>,
 ) {
     let (video_texture, receiver, pipeline) = spawn_video_pipeline(
         &mut images,
@@ -57,9 +67,8 @@ fn setup_menu(
     );
 
     // Audio directory targeted directly
-    commands.spawn(AudioBundle {
-        source: asset_server.load("sounds/audio.ogg"),
-        settings: PlaybackSettings::LOOP,
+    play_music.send(PlayMusicEvent {
+        track: MusicTrack::MainMenu,
     });
 
     commands.spawn((
@@ -324,8 +333,9 @@ fn menu_action_system(
     mut app_exit_events: EventWriter<AppExit>,
     mut screen_state: ResMut<MenuScreenState>,
     mut next_state: ResMut<NextState<AppState>>,
-    asset_server: Res<AssetServer>,
     mut commands: Commands,
+    mut play_music: EventWriter<PlayMusicEvent>,
+    mut play_sfx: EventWriter<PlaySfxEvent>,
 ) {
     // Collect entities to safely modify text modifications later, preventing double-borrow errors
     let mut text_to_update: Option<(Entity, Color)> = None;
@@ -349,9 +359,8 @@ fn menu_action_system(
 
         match *interaction {
             Interaction::Pressed => {
-                commands.spawn(AudioBundle {
-                    source: asset_server.load("audio/click_button.ogg"),
-                    settings: PlaybackSettings::ONCE,
+                play_sfx.send(PlaySfxEvent {
+                    effect: SoundEffect::ButtonClick,
                 });
 
                 match action {
@@ -372,6 +381,9 @@ fn menu_action_system(
                     }
                     MenuButtonAction::HowToPlay => {
                         *screen_state = MenuScreenState::Main;
+                        play_music.send(PlayMusicEvent {
+                            track: MusicTrack::Gameplay,
+                        });
                         next_state.set(AppState::Tutorial);
                     }
                     MenuButtonAction::CreateServer => {

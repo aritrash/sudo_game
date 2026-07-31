@@ -1,0 +1,88 @@
+    Checking sudo_game v0.1.0 (C:\sudo_game)
+src\tutorial\ui.rs:18:19: error[E0432]: unresolved import `bevy::audio::AudioPlayer`: no `AudioPlayer` in `audio`
+src\tutorial\ui.rs:20:24: error[E0432]: unresolved imports `bevy::text::TextColor`, `bevy::text::TextFont`: no `TextColor` in `text`, no `TextFont` in `text`
+src\tutorial\cleanup.rs:18:5: error[E0432]: unresolved imports `crate::tutorial::ui::TutorialCompletionScreen`, `crate::tutorial::ui::TutorialContinuePrompt`, `crate::tutorial::ui::TutorialDialogue`, `crate::tutorial::ui::TutorialObjectivePanel`, `crate::tutorial::ui::TutorialUi`, `crate::tutorial::ui::TutorialVoiceAudio`: no `TutorialCompletionScreen` in `tutorial::ui`, no `TutorialContinuePrompt` in `tutorial::ui`, no `TutorialDialogue` in `tutorial::ui`, no `TutorialObjectivePanel` in `tutorial::ui`, no `TutorialUi` in `tutorial::ui`, no `TutorialVoiceAudio` in `tutorial::ui`
+src\tutorial\ui.rs:57:25: error[E0425]: cannot find type `PongMessage` in this scope: not found in this scope
+src\tutorial\ui.rs:718:13: error[E0425]: cannot find value `TutorialVoiceAudio` in this scope: not found in this scope
+src\tutorial\ui.rs:733:39: error[E0425]: cannot find type `TutorialVoiceAudio` in this scope: not found in this scope
+src\tutorial\ui.rs:1037:41: error[E0425]: cannot find type `PongMessage` in this scope: not found in this scope
+src\main.rs:48:32: error[E0425]: cannot find value `TutorialPlugin` in module `tutorial`: not found in `tutorial`
+src\tutorial\player.rs:12:5: warning: unused import: `crate::tutorial::stages::TutorialStage`
+src\tutorial\ui.rs:20:18: warning: unused import: `Font`
+src\tutorial\ui.rs:21:5: warning: unused import: `bevy::ui::prelude::*`
+src\tutorial\ui.rs:284:17: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:285:17: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:286:17: error[E0560]: struct `bevy::prelude::Node` has no field named `justify_content`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:287:17: error[E0560]: struct `bevy::prelude::Node` has no field named `align_items`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:299:21: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:300:21: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:301:21: error[E0560]: struct `bevy::prelude::Node` has no field named `justify_content`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:302:21: error[E0560]: struct `bevy::prelude::Node` has no field named `align_items`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:303:21: error[E0560]: struct `bevy::prelude::Node` has no field named `padding`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:316:25: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:317:25: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:318:25: error[E0560]: struct `bevy::prelude::Node` has no field named `flex_direction`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:319:25: error[E0560]: struct `bevy::prelude::Node` has no field named `padding`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:320:25: error[E0560]: struct `bevy::prelude::Node` has no field named `row_gap`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:323:44: error[E0599]: no variant or associated item named `srgba` found for enum `bevy::prelude::Color` in the current scope: variant or associated item not found in `bevy::prelude::Color`
+src\tutorial\ui.rs:329:31: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:340:31: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:346:42: error[E0599]: no variant or associated item named `srgb` found for enum `bevy::prelude::Color` in the current scope: variant or associated item not found in `bevy::prelude::Color`
+src\tutorial\ui.rs:357:21: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:358:21: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:359:21: error[E0560]: struct `bevy::prelude::Node` has no field named `justify_content`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:360:21: error[E0560]: struct `bevy::prelude::Node` has no field named `align_items`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:361:21: error[E0560]: struct `bevy::prelude::Node` has no field named `padding`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:374:25: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:375:25: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:376:25: error[E0560]: struct `bevy::prelude::Node` has no field named `flex_direction`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:377:25: error[E0560]: struct `bevy::prelude::Node` has no field named `padding`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:378:25: error[E0560]: struct `bevy::prelude::Node` has no field named `row_gap`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:381:44: error[E0599]: no variant or associated item named `srgba` found for enum `bevy::prelude::Color` in the current scope: variant or associated item not found in `bevy::prelude::Color`
+src\tutorial\ui.rs:392:31: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:407:31: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:422:31: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:428:42: error[E0599]: no variant or associated item named `srgb` found for enum `bevy::prelude::Color` in the current scope: variant or associated item not found in `bevy::prelude::Color`
+src\tutorial\ui.rs:449:17: error[E0560]: struct `bevy::prelude::Node` has no field named `width`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:450:17: error[E0560]: struct `bevy::prelude::Node` has no field named `height`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:451:17: error[E0560]: struct `bevy::prelude::Node` has no field named `justify_content`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:452:17: error[E0560]: struct `bevy::prelude::Node` has no field named `align_items`: `bevy::prelude::Node` does not have this field
+src\tutorial\ui.rs:455:36: error[E0599]: no variant or associated item named `srgba` found for enum `bevy::prelude::Color` in the current scope: variant or associated item not found in `bevy::prelude::Color`
+src\tutorial\ui.rs:461:23: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:497:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:501:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:502:33: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:505:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:506:32: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:530:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:534:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:556:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:557:33: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:560:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:561:32: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:581:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:593:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:611:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:612:34: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:615:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:616:40: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:633:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:634:34: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:637:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:638:40: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:662:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:663:34: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:666:12: error[E0308]: mismatched types: expected `Mut<'_, Text>`, found `Result<_, _>`
+src\tutorial\ui.rs:667:40: error[E0599]: no function or associated item named `new` found for struct `bevy::prelude::Text` in the current scope: function or associated item not found in `bevy::prelude::Text`
+src\tutorial\ui.rs:682:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:698:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:799:17: error[E0599]: no method named `set_alpha` found for enum `bevy::prelude::Color` in the current scope
+src\tutorial\ui.rs:822:17: error[E0599]: no method named `set_alpha` found for enum `bevy::prelude::Color` in the current scope
+src\tutorial\ui.rs:840:17: error[E0599]: no method named `set_alpha` found for enum `bevy::prelude::Color` in the current scope
+src\tutorial\ui.rs:854:24: error[E0599]: no method named `elapsed_secs` found for struct `bevy::prelude::Res<'_, bevy::prelude::Time>` in the current scope
+src\tutorial\ui.rs:872:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:933:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:999:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+src\tutorial\ui.rs:1015:12: error[E0308]: mismatched types: expected `Mut<'_, Visibility>`, found `Result<_, _>`
+warning: `sudo_game` (bin "sudo_game") generated 3 warnings
+error: could not compile `sudo_game` (bin "sudo_game") due to 82 previous errors; 3 warnings emitted
