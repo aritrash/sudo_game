@@ -12,9 +12,7 @@ impl SoundEffect {
     /// Returns the asset path.
     pub fn asset_path(self) -> &'static str {
         match self {
-            SoundEffect::ButtonClick => {
-                "audio/sfx/click_button.ogg"
-            }
+            SoundEffect::ButtonClick => "audio/sfx/click_button.ogg",
         }
     }
 }

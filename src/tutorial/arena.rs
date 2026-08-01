@@ -60,25 +60,20 @@ pub const ORIENTATION_FACILITY: &[RoomDefinition] = &[
         room: TutorialRoom::SpawnLobby,
         name: "Spawn Lobby",
         unlock_stage: TutorialStage::Boot,
-        objects: &[
-            TutorialObject::PongCapsule,
-        ],
+        objects: &[TutorialObject::PongCapsule],
     },
-
     RoomDefinition {
         room: TutorialRoom::MovementHall,
         name: "Movement Hall",
         unlock_stage: TutorialStage::Movement,
         objects: &[],
     },
-
     RoomDefinition {
         room: TutorialRoom::ObservationRoom,
         name: "Observation Room",
         unlock_stage: TutorialStage::Camera,
         objects: &[],
     },
-
     RoomDefinition {
         room: TutorialRoom::AuthenticationRoom,
         name: "Authentication Room",
@@ -88,54 +83,40 @@ pub const ORIENTATION_FACILITY: &[RoomDefinition] = &[
             TutorialObject::StickyNote,
         ],
     },
-
     RoomDefinition {
         room: TutorialRoom::PacketStorage,
         name: "Packet Storage",
         unlock_stage: TutorialStage::PacketPickup,
-        objects: &[
-            TutorialObject::DataPacket,
-        ],
+        objects: &[TutorialObject::DataPacket],
     },
-
     RoomDefinition {
         room: TutorialRoom::UplinkRoom,
         name: "Uplink Room",
         unlock_stage: TutorialStage::PacketDelivery,
-        objects: &[
-            TutorialObject::UplinkTerminal,
-        ],
+        objects: &[TutorialObject::UplinkTerminal],
     },
-
     RoomDefinition {
         room: TutorialRoom::QuarantineRoom,
         name: "Quarantine",
         unlock_stage: TutorialStage::Quarantine,
         objects: &[],
     },
-
     RoomDefinition {
         room: TutorialRoom::FreezeChamber,
         name: "Freeze Demonstration Chamber",
         unlock_stage: TutorialStage::Freeze,
         objects: &[],
     },
-
     RoomDefinition {
         room: TutorialRoom::MeetingRoom,
         name: "Emergency Meeting Chamber",
         unlock_stage: TutorialStage::Meeting,
-        objects: &[
-            TutorialObject::EmergencyButton,
-        ],
+        objects: &[TutorialObject::EmergencyButton],
     },
-
     RoomDefinition {
         room: TutorialRoom::GraduationHall,
         name: "Graduation Hall",
         unlock_stage: TutorialStage::Graduation,
-        objects: &[
-            TutorialObject::ExitDoor,
-        ],
+        objects: &[TutorialObject::ExitDoor],
     },
 ];

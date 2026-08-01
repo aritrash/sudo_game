@@ -10,20 +10,13 @@
 
 use bevy::prelude::*;
 
-use crate::AppState;
 use crate::tutorial::pause::TutorialPauseState;
 use crate::tutorial::ui::{
-    ContinuePrompt,
-    DialogueState,
-    ObjectiveState,
-    TutorialCompletionScreen,
-    TutorialContinuePrompt,
-    TutorialDialogue,
-    TutorialObjectivePanel,
-    TutorialUi,
-    TutorialVoiceAudio,
-    UiAnimationState,
+    ContinuePrompt, DialogueState, ObjectiveState, TutorialCompletionScreen,
+    TutorialContinuePrompt, TutorialDialogue, TutorialObjectivePanel, TutorialUi,
+    TutorialVoiceAudio, UiAnimationState,
 };
+use crate::AppState;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Events
@@ -46,26 +39,17 @@ pub struct TutorialCleanupPlugin;
 impl Plugin for TutorialCleanupPlugin {
     fn build(&self, app: &mut App) {
         app
-
             ////////////////////////////////////////////////////////////////////
             // Events
             ////////////////////////////////////////////////////////////////////
-
             .add_event::<TutorialCleanupEvent>()
             .add_event::<TutorialCleanupFinishedEvent>()
-
             ////////////////////////////////////////////////////////////////////
             // Cleanup Systems
             ////////////////////////////////////////////////////////////////////
-
             .add_systems(
                 OnExit(AppState::Tutorial),
-                (
-                    cleanup_ui,
-                    cleanup_audio,
-                    reset_resources,
-                    finish_cleanup,
-                ),
+                (cleanup_ui, cleanup_audio, reset_resources, finish_cleanup),
             );
     }
 }
@@ -105,10 +89,7 @@ pub fn cleanup_ui(
 }
 
 /// Stops all tutorial voice playback.
-pub fn cleanup_audio(
-    mut commands: Commands,
-    voices: Query<Entity, With<TutorialVoiceAudio>>,
-) {
+pub fn cleanup_audio(mut commands: Commands, voices: Query<Entity, With<TutorialVoiceAudio>>) {
     for entity in &voices {
         commands.entity(entity).despawn_recursive();
     }

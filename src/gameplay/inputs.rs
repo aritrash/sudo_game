@@ -31,10 +31,7 @@ pub struct PlayerInput {
     pub pause: bool,
 }
 
-pub fn keyboard_input_system(
-    keyboard: Res<ButtonInput<KeyCode>>,
-    mut input: ResMut<PlayerInput>,
-) {
+pub fn keyboard_input_system(keyboard: Res<ButtonInput<KeyCode>>, mut input: ResMut<PlayerInput>) {
     let mut direction = Vec2::ZERO;
 
     if keyboard.pressed(KeyCode::KeyW) {
@@ -62,12 +59,8 @@ pub fn keyboard_input_system(
     input.pause = keyboard.just_pressed(KeyCode::Escape);
 }
 
-pub fn mouse_input_system(
-    mouse: Res<ButtonInput<MouseButton>>,
-    mut input: ResMut<PlayerInput>,
-) {
+pub fn mouse_input_system(mouse: Res<ButtonInput<MouseButton>>, mut input: ResMut<PlayerInput>) {
     input.left_click = mouse.just_pressed(MouseButton::Left);
 
     input.right_click = mouse.just_pressed(MouseButton::Right);
 }
-

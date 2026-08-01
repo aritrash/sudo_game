@@ -11,8 +11,8 @@
 
 use bevy::prelude::*;
 
-use crate::AppState;
 use crate::tutorial::progression::ProgressTutorialEvent;
+use crate::AppState;
 
 /// Tracks whether the current tutorial task has been completed.
 #[derive(Resource, Debug, Default)]
@@ -45,9 +45,10 @@ pub struct TutorialTaskPlugin;
 
 impl Plugin for TutorialTaskPlugin {
     fn build(&self, app: &mut App) {
-        app
-            .init_resource::<TutorialTaskState>()
-            .add_systems(Update, advance_tutorial.run_if(in_state(AppState::Tutorial)));
+        app.init_resource::<TutorialTaskState>().add_systems(
+            Update,
+            advance_tutorial.run_if(in_state(AppState::Tutorial)),
+        );
     }
 }
 

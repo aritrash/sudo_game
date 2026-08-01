@@ -13,13 +13,9 @@ impl MusicTrack {
     /// Returns the asset path for this music track.
     pub fn asset_path(self) -> &'static str {
         match self {
-            MusicTrack::MainMenu => {
-                "audio/music/mainmenu.ogg"
-            }
+            MusicTrack::MainMenu => "audio/music/mainmenu.ogg",
 
-            MusicTrack::Gameplay => {
-                "audio/music/gameplay.ogg"
-            }
+            MusicTrack::Gameplay => "audio/music/gameplay.ogg",
         }
     }
 }
