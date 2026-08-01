@@ -67,6 +67,7 @@ fn setup_camera(mut commands: Commands) {
         camera: Camera {
             order: 1,
             clear_color: ClearColorConfig::None,
+            hdr: true,
             ..default()
         },
         ..default()
