@@ -6,6 +6,7 @@ mod menu;
 mod splash;
 mod tutorial;
 mod video;
+mod maps;
 
 use audiomanager::AudioManagerPlugin;
 use bevy::prelude::*;
@@ -15,7 +16,7 @@ use bevy_kira_audio::prelude::*;
 use gameplay::GameplayPlugin;
 use menu::MenuPlugin;
 use splash::SplashPlugin;
-use tutorial::TutorialPlugin;
+use maps::orientation::OrientationPlugin;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -57,7 +58,7 @@ fn main() {
         .add_plugins(MenuPlugin)
         .add_plugins(video::VideoPlugin)
         .add_plugins(GameplayPlugin)
-        .add_plugins(TutorialPlugin)
+        .add_plugins(OrientationPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }

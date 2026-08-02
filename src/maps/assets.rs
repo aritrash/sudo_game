@@ -39,7 +39,9 @@ pub struct StaticEnvironment;
 ///     • Security cameras
 ///     • Air-conditioning vents
 #[derive(Component)]
-pub struct Infrastructure;
+pub struct Infrastructure {
+    pub kind: InfrastructureType,
+}
 
 /// Marks an interactable object.
 #[derive(Component)]
@@ -278,15 +280,15 @@ pub fn ceiling_light(
     materials: &mut Assets<StandardMaterial>,
     position: Vec3,
 ) {
+    // Light Fixture
     commands.spawn((
         Infrastructure {
             kind: InfrastructureType::CeilingLight,
         },
-
         PbrBundle {
             mesh: meshes.add(Cuboid::new(0.40, 0.08, 0.40)),
             material: materials.add(StandardMaterial {
-                base_color: Color::srgb(0.95, 0.95, 0.98),
+                base_color: Color::rgb(0.95, 0.95, 0.98),
                 metallic: 0.0,
                 perceptual_roughness: 0.85,
                 ..default()
@@ -294,27 +296,23 @@ pub fn ceiling_light(
             transform: Transform::from_translation(position),
             ..default()
         },
+    ));
 
-        PointLightBundle {
-            point_light: PointLight {
-                intensity: 2200.0,
-                range: 14.0,
-                radius: 0.15,
-
-                color: Color::srgb(1.0, 0.98, 0.93),
-
-                shadows_enabled: true,
-
-                ..default()
-            },
-
-            transform: Transform::from_translation(
-                position - Vec3::new(0.0, 0.08, 0.0),
-            ),
-
+    // Actual Light Source
+    commands.spawn(PointLightBundle {
+        point_light: PointLight {
+            intensity: 2200.0,
+            range: 14.0,
+            radius: 0.15,
+            color: Color::rgb(1.0, 0.98, 0.93),
+            shadows_enabled: true,
             ..default()
         },
-    ));
+        transform: Transform::from_translation(
+            position - Vec3::new(0.0, 0.08, 0.0),
+        ),
+        ..default()
+    });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -399,9 +397,8 @@ pub fn terminal(
     materials: &mut Assets<StandardMaterial>,
     position: Vec3,
 ) {
-    commands.spawn((
-        InteractableBundle {
-
+    commands
+        .spawn(InteractableBundle {
             interactable: Interactable {
                 kind: InteractableType::Terminal,
             },
@@ -422,27 +419,31 @@ pub fn terminal(
             inherited_visibility: default(),
 
             view_visibility: default(),
-        },
+        })
+        .with_children(|parent| {
+            parent.spawn(PbrBundle {
+                mesh: meshes.add(Cuboid::new(
+                    TERMINAL_WIDTH,
+                    TERMINAL_HEIGHT,
+                    TERMINAL_DEPTH,
+                )),
 
-        PbrBundle {
-            mesh: meshes.add(Cuboid::new(
-                TERMINAL_WIDTH,
-                TERMINAL_HEIGHT,
-                TERMINAL_DEPTH,
-            )),
+                material: materials.add(StandardMaterial {
+                    base_color: Color::rgb(0.18, 0.18, 0.20),
+                    metallic: 0.30,
+                    perceptual_roughness: 0.60,
+                    ..default()
+                }),
 
-            material: materials.add(StandardMaterial {
-                base_color: Color::srgb(0.18, 0.18, 0.20),
-                metallic: 0.30,
-                perceptual_roughness: 0.60,
+                transform: Transform::from_translation(Vec3::new(
+                    0.0,
+                    TERMINAL_HEIGHT * 0.5,
+                    0.0,
+                )),
+
                 ..default()
-            }),
-
-            transform: Transform::from_translation(position),
-
-            ..default()
-        },
-    ));
+            });
+        });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,9 +456,8 @@ pub fn keypad(
     materials: &mut Assets<StandardMaterial>,
     position: Vec3,
 ) {
-    commands.spawn((
-        InteractableBundle {
-
+    commands
+        .spawn(InteractableBundle {
             interactable: Interactable {
                 kind: InteractableType::Keypad,
             },
@@ -478,28 +478,31 @@ pub fn keypad(
             inherited_visibility: default(),
 
             view_visibility: default(),
-        },
+        })
+        .with_children(|parent| {
+            parent.spawn(PbrBundle {
+                mesh: meshes.add(Cuboid::new(
+                    KEYPAD_WIDTH,
+                    KEYPAD_HEIGHT,
+                    0.08,
+                )),
 
-        PbrBundle {
+                material: materials.add(StandardMaterial {
+                    base_color: Color::rgb(0.12, 0.12, 0.13),
+                    metallic: 0.40,
+                    perceptual_roughness: 0.50,
+                    ..default()
+                }),
 
-            mesh: meshes.add(Cuboid::new(
-                KEYPAD_WIDTH,
-                KEYPAD_HEIGHT,
-                0.08,
-            )),
+                transform: Transform::from_translation(Vec3::new(
+                    0.0,
+                    KEYPAD_HEIGHT * 0.5,
+                    0.0,
+                )),
 
-            material: materials.add(StandardMaterial {
-                base_color: Color::srgb(0.12, 0.12, 0.13),
-                metallic: 0.40,
-                perceptual_roughness: 0.50,
                 ..default()
-            }),
-
-            transform: Transform::from_translation(position),
-
-            ..default()
-        },
-    ));
+            });
+        });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -512,9 +515,8 @@ pub fn uplink_terminal(
     materials: &mut Assets<StandardMaterial>,
     position: Vec3,
 ) {
-    commands.spawn((
-        InteractableBundle {
-
+    commands
+        .spawn(InteractableBundle {
             interactable: Interactable {
                 kind: InteractableType::UplinkTerminal,
             },
@@ -535,28 +537,31 @@ pub fn uplink_terminal(
             inherited_visibility: default(),
 
             view_visibility: default(),
-        },
+        })
+        .with_children(|parent| {
+            parent.spawn(PbrBundle {
+                mesh: meshes.add(Cuboid::new(
+                    UPLINK_WIDTH,
+                    UPLINK_HEIGHT,
+                    UPLINK_DEPTH,
+                )),
 
-        PbrBundle {
+                material: materials.add(StandardMaterial {
+                    base_color: Color::rgb(0.22, 0.23, 0.25),
+                    metallic: 0.45,
+                    perceptual_roughness: 0.55,
+                    ..default()
+                }),
 
-            mesh: meshes.add(Cuboid::new(
-                UPLINK_WIDTH,
-                UPLINK_HEIGHT,
-                UPLINK_DEPTH,
-            )),
+                transform: Transform::from_translation(Vec3::new(
+                    0.0,
+                    UPLINK_HEIGHT * 0.5,
+                    0.0,
+                )),
 
-            material: materials.add(StandardMaterial {
-                base_color: Color::srgb(0.22, 0.23, 0.25),
-                metallic: 0.45,
-                perceptual_roughness: 0.55,
                 ..default()
-            }),
-
-            transform: Transform::from_translation(position),
-
-            ..default()
-        },
-    ));
+            });
+        });
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,14 +675,14 @@ pub fn desk(
 ) {
     let tabletop_material = create_material(
         materials,
-        Color::srgb(0.56, 0.43, 0.28),
+        Color::rgb(0.56, 0.43, 0.28),
         0.0,
         0.82,
     );
 
     let leg_material = create_material(
         materials,
-        Color::srgb(0.18, 0.18, 0.18),
+        Color::rgb(0.18, 0.18, 0.18),
         0.35,
         0.65,
     );
@@ -790,14 +795,14 @@ pub fn chair(
 ) {
     let seat_material = create_material(
         materials,
-        Color::srgb(0.18, 0.18, 0.20),
+        Color::rgb(0.18, 0.18, 0.20),
         0.0,
         0.72,
     );
 
     let frame_material = create_material(
         materials,
-        Color::srgb(0.30, 0.30, 0.32),
+        Color::rgb(0.30, 0.30, 0.32),
         0.45,
         0.45,
     );
@@ -932,14 +937,14 @@ pub fn cabinet(
 ) {
     let body_material = create_material(
         materials,
-        Color::srgb(0.72, 0.74, 0.77),
+        Color::rgb(0.72, 0.74, 0.77),
         0.45,
         0.38,
     );
 
     let handle_material = create_material(
         materials,
-        Color::srgb(0.18, 0.18, 0.18),
+        Color::rgb(0.18, 0.18, 0.18),
         0.70,
         0.20,
     );
@@ -1098,21 +1103,21 @@ pub fn server_rack(
 ) {
     let body_material = create_material(
         materials,
-        Color::srgb(0.08, 0.08, 0.09),
+        Color::rgb(0.08, 0.08, 0.09),
         0.55,
         0.42,
     );
 
     let rail_material = create_material(
         materials,
-        Color::srgb(0.22, 0.24, 0.26),
+        Color::rgb(0.22, 0.24, 0.26),
         0.65,
         0.28,
     );
 
     let led_material = create_material(
         materials,
-        Color::srgb(0.10, 0.80, 0.18),
+        Color::rgb(0.10, 0.80, 0.18),
         0.0,
         0.15,
     );
@@ -1245,4 +1250,67 @@ pub fn server_rack(
                 );
             }
         });
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Decal
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/// Spawns a textured decal.
+///
+/// Decals are thin textured planes typically used for:
+///
+/// • Floor logos
+/// • Direction arrows
+/// • Hazard markings
+/// • Wall signs
+/// • Room labels
+///
+/// The decal should be placed slightly above the surface to avoid
+/// z-fighting.
+pub fn decal(
+    commands: &mut Commands,
+    asset_server: &AssetServer,
+    meshes: &mut Assets<Mesh>,
+    materials: &mut Assets<StandardMaterial>,
+    texture_path: &'static str,
+    position: Vec3,
+    size: Vec2,
+    rotation: Quat,
+) {
+    let texture = asset_server.load(texture_path);
+
+    let material = materials.add(StandardMaterial {
+        base_color_texture: Some(texture),
+
+        alpha_mode: AlphaMode::Blend,
+
+        unlit: true,
+
+        cull_mode: None,
+
+        perceptual_roughness: 1.0,
+
+        metallic: 0.0,
+
+        ..default()
+    });
+
+    commands.spawn(PbrBundle {
+
+        mesh: meshes.add(Plane3d::default().mesh().size(
+            size.x,
+            size.y,
+        )),
+
+        material,
+
+        transform: Transform {
+            translation: position,
+            rotation,
+            ..default()
+        },
+
+        ..default()
+    });
 }

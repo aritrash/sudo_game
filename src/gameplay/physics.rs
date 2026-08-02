@@ -38,7 +38,7 @@ pub fn movement_system(time: Res<Time>, mut query: Query<(&Velocity, &mut Transf
         let delta = velocity.linear * time.delta_seconds();
 
         transform.translation.x += delta.x;
-        transform.translation.y += delta.y;
+        transform.translation.z += delta.y;
     }
 }
 
