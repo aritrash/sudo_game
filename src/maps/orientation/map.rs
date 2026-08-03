@@ -55,6 +55,7 @@ pub fn build_orientation_facility(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
+    println!("Orientation: building facility");
     let root = commands
         .spawn((
             Name::new("Orientation Facility"),

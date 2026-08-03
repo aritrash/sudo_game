@@ -17,11 +17,6 @@
 
 use bevy::prelude::*;
 
-use crate::gameplay::physics::{
-    Collider,
-    Velocity,
-};
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Marker Components
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,8 +129,6 @@ pub struct FurnitureId(pub u32);
 pub struct FurnitureBundle {
     pub furniture: Furniture,
     pub morph_state: MorphState,
-    pub velocity: Velocity,
-    pub collider: Collider,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub visibility: Visibility,
@@ -145,7 +138,6 @@ pub struct FurnitureBundle {
 
 #[derive(Bundle)]
 pub struct StaticBundle {
-    pub collider: Collider,
     pub environment: StaticEnvironment,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
@@ -179,9 +171,6 @@ pub fn floor(
 ) {
     commands.spawn(StaticBundle {
 
-        collider: Collider {
-            size,
-        },
         environment: StaticEnvironment,
         transform: Transform::from_translation(position),
         global_transform: default(),
@@ -202,9 +191,6 @@ pub fn ceiling(
 ) {
     commands.spawn(StaticBundle {
 
-        collider: Collider {
-            size,
-        },
         environment: StaticEnvironment,
         transform: Transform::from_translation(position),
         global_transform: default(),
@@ -225,10 +211,6 @@ pub fn wall(
 ) {
     commands.spawn(StaticBundle {
 
-        collider: Collider {
-            size,
-        },
-
         environment: StaticEnvironment,
         transform: Transform::from_translation(position),
         global_transform: default(),
@@ -248,10 +230,6 @@ pub fn door(
     size: Vec2,
 ) {
     commands.spawn(StaticBundle {
-
-        collider: Collider {
-            size,
-        },
 
         environment: StaticEnvironment,
         transform: Transform::from_translation(position),
@@ -364,7 +342,6 @@ pub fn security_camera(
 #[derive(Bundle)]
 pub struct InteractableBundle {
     pub interactable: Interactable,
-    pub collider: Collider,
     pub transform: Transform,
     pub global_transform: GlobalTransform,
     pub visibility: Visibility,
@@ -402,14 +379,6 @@ pub fn terminal(
             interactable: Interactable {
                 kind: InteractableType::Terminal,
             },
-
-            collider: Collider {
-                size: Vec2::new(
-                    TERMINAL_WIDTH,
-                    TERMINAL_DEPTH,
-                ),
-            },
-
             transform: Transform::from_translation(position),
 
             global_transform: default(),
@@ -462,13 +431,6 @@ pub fn keypad(
                 kind: InteractableType::Keypad,
             },
 
-            collider: Collider {
-                size: Vec2::new(
-                    KEYPAD_WIDTH,
-                    0.10,
-                ),
-            },
-
             transform: Transform::from_translation(position),
 
             global_transform: default(),
@@ -519,13 +481,6 @@ pub fn uplink_terminal(
         .spawn(InteractableBundle {
             interactable: Interactable {
                 kind: InteractableType::UplinkTerminal,
-            },
-
-            collider: Collider {
-                size: Vec2::new(
-                    UPLINK_WIDTH,
-                    UPLINK_DEPTH,
-                ),
             },
 
             transform: Transform::from_translation(position),
@@ -696,15 +651,6 @@ pub fn desk(
 
                 morph_state: MorphState::default(),
 
-                velocity: Velocity::default(),
-
-                collider: Collider {
-                    size: Vec2::new(
-                        DESK_WIDTH,
-                        DESK_DEPTH,
-                    ),
-                },
-
                 transform: Transform::from_translation(position),
 
                 global_transform: default(),
@@ -816,15 +762,6 @@ pub fn chair(
                 },
 
                 morph_state: MorphState::default(),
-
-                velocity: Velocity::default(),
-
-                collider: Collider {
-                    size: Vec2::new(
-                        CHAIR_WIDTH,
-                        CHAIR_DEPTH,
-                    ),
-                },
 
                 transform: Transform::from_translation(position),
 
@@ -958,15 +895,6 @@ pub fn cabinet(
                 },
 
                 morph_state: MorphState::default(),
-
-                velocity: Velocity::default(),
-
-                collider: Collider {
-                    size: Vec2::new(
-                        CABINET_WIDTH,
-                        CABINET_DEPTH,
-                    ),
-                },
 
                 transform: Transform::from_translation(position),
 
@@ -1131,15 +1059,6 @@ pub fn server_rack(
                 },
 
                 morph_state: MorphState::default(),
-
-                velocity: Velocity::default(),
-
-                collider: Collider {
-                    size: Vec2::new(
-                        SERVER_RACK_WIDTH,
-                        SERVER_RACK_DEPTH,
-                    ),
-                },
 
                 transform: Transform::from_translation(position),
 
