@@ -1,10 +1,10 @@
 mod agegate;
 mod audiomanager;
-mod gameplay;
 mod loading;
+mod maps;
 mod menu;
 mod splash;
-mod tutorial;
+mod ui;
 mod video;
 
 use audiomanager::AudioManagerPlugin;
@@ -12,10 +12,8 @@ use bevy::prelude::*;
 use bevy::render::camera::ClearColorConfig;
 use bevy::window::PrimaryWindow;
 use bevy_kira_audio::prelude::*;
-use gameplay::GameplayPlugin;
 use menu::MenuPlugin;
 use splash::SplashPlugin;
-use tutorial::TutorialPlugin;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -33,11 +31,14 @@ pub enum AppState {
 fn main() {
     // --- GSTREAMER SANITY CHECK ---
     gstreamer::init().unwrap();
+
     println!(
         "GStreamer successfully linked! Version: {}",
         gstreamer::version_string()
     );
+
     // ------------------------------
+
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
@@ -56,8 +57,6 @@ fn main() {
         .add_plugins(AudioManagerPlugin)
         .add_plugins(MenuPlugin)
         .add_plugins(video::VideoPlugin)
-        .add_plugins(GameplayPlugin)
-        .add_plugins(TutorialPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }
@@ -74,7 +73,9 @@ fn setup_camera(mut commands: Commands) {
     });
 }
 
-fn maximize_window(mut query: Query<&mut Window, With<PrimaryWindow>>) {
+fn maximize_window(
+    mut query: Query<&mut Window, With<PrimaryWindow>>,
+) {
     if let Ok(mut window) = query.get_single_mut() {
         window.set_maximized(true);
     }
