@@ -57,7 +57,7 @@ fn setup_menu(
 ) {
     let (video_texture, receiver, pipeline) = spawn_video_pipeline(
         &mut images,
-        "assets/videos/background_loop.webm",
+        "assets/videos/sudomainmenu.webm",
         1920,
         1080,
     );

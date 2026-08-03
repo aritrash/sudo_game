@@ -4,16 +4,20 @@ mod loading;
 mod maps;
 mod menu;
 mod splash;
-mod ui;
+mod gameplay;
 mod video;
 
-use audiomanager::AudioManagerPlugin;
 use bevy::prelude::*;
 use bevy::render::camera::ClearColorConfig;
 use bevy::window::PrimaryWindow;
 use bevy_kira_audio::prelude::*;
 use menu::MenuPlugin;
 use splash::SplashPlugin;
+use audiomanager::AudioManagerPlugin;
+use agegate::AgeGatePlugin;
+use loading::LoadingPlugin;
+use video::VideoPlugin;
+use gameplay::GameplayPlugin;
 
 // The global runlevels for the application.
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
@@ -51,12 +55,13 @@ fn main() {
         .init_state::<AppState>()
         .insert_resource(Msaa::Sample4)
         .add_plugins(SplashPlugin)
-        .add_plugins(agegate::AgeGatePlugin)
-        .add_plugins(loading::LoadingPlugin)
+        .add_plugins(AgeGatePlugin)
+        .add_plugins(LoadingPlugin)
         .add_plugins(AudioPlugin)
         .add_plugins(AudioManagerPlugin)
         .add_plugins(MenuPlugin)
-        .add_plugins(video::VideoPlugin)
+        .add_plugins(VideoPlugin)
+        .add_plugins(GameplayPlugin)
         .add_systems(Startup, (setup_camera, maximize_window))
         .run();
 }
